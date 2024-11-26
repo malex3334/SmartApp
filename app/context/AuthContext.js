@@ -1,19 +1,13 @@
 // src/contexts/AuthContext.js
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { auth, database } from "../../FirebaseConfig";
+import { auth } from "../../FirebaseConfig";
 import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from "firebase/auth";
 import { useNavigation } from "expo-router";
 import { firebaseData } from "../../FirebaseConfig";
-import {
-  getDocs,
-  collection,
-  onSnapshot,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { onSnapshot, doc, updateDoc } from "firebase/firestore";
 // Create a Context
 const AuthContext = createContext();
 
@@ -21,7 +15,6 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState();
-  const [allowSound, setAllowSound] = useState(true);
   const [rerender, setRerender] = useState(false);
   const navigation = useNavigation();
 
@@ -40,8 +33,6 @@ export const AuthProvider = ({ children }) => {
         password
       );
       const user = userCredential.user;
-      // console.log("Auth successful", user);
-      // const userData = await fetchUserData(user.uid);
       const aUser = { ...user, ...userData };
       setUser(aUser);
       setUser(user);
@@ -65,40 +56,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // //
-  // const fetchUserData = async (uid) => {
-  //   let docData;
-  //   try {
-  //     const querySnapshot = await getDocs(collection(firebaseData, "users"));
-  //     querySnapshot.forEach((doc) => {
-  //       const databaseUSer = doc.data();
-  //       if ((databaseUSer.uid = uid)) {
-  //         let snapData = doc.data();
-  //         docData = snapData;
-  //       }
-  //     });
-  //   } catch (e) {
-  //     console.error("Error fetching documents:", e);
-  //   } finally {
-  //     return docData;
-  //   }
-  // };
-
   useEffect(() => {
     if (user) {
-      const userDoc = doc(
-        firebaseData,
-        "users",
-        // "qIJhFpJ7I4OgW5e1rvHAMS04vJF2"
-        auth?.currentUser.uid
-      );
-      // Set up the listener
+      const userDoc = doc(firebaseData, "users", auth?.currentUser.uid);
       const unsubscribe = onSnapshot(
         userDoc,
         (docSnapshot) => {
           if (docSnapshot.exists()) {
             const data = docSnapshot.data();
-            setUser((prev) => ({ ...prev, ...data })); // Correctly merge previous state and new data
+            setUser((prev) => ({ ...prev, ...data }));
             setUserData(data);
           } else {
             console.log("No such document!");
@@ -117,11 +83,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const userDocRef = doc(firebaseData, "users", auth?.currentUser?.uid);
       await updateDoc(userDocRef, {
-        "options.allowSounds": newValue, // Update Firestore
+        "options.allowSounds": newValue,
       });
       setUser((prev) => ({
         ...prev,
-        options: { ...prev.options, allowSounds: newValue }, // Update local context
+        options: { ...prev.options, allowSounds: newValue },
       }));
     } catch (error) {
       console.error("Error updating allowSounds:", error);
@@ -132,11 +98,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const userDocRef = doc(firebaseData, "users", auth?.currentUser?.uid);
       await updateDoc(userDocRef, {
-        name: newValue, // Update Firestore
+        name: newValue,
       });
       setUser((prev) => ({
         ...prev,
-        data: { ...prev, name: newValue }, // Update local context
+        data: { ...prev, name: newValue },
       }));
     } catch (error) {
       console.error("Error updating allowSounds:", error);

@@ -8,6 +8,8 @@ const RootLayout = () => {
     <AuthProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" style={styles.container} />
+        <Stack.Screen name="shopping" options={{ headerShown: false }} />
+        <Stack.Screen name="todo" options={{ headerShown: false }} />
       </Stack>
     </AuthProvider>
   );

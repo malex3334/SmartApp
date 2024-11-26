@@ -10,18 +10,23 @@ import colors from "../constans/colors";
 import constans from "../constans/styling";
 import SectionTitle from "../components/SectionTitle";
 import LineBreak from "../components/LineBreak";
-import {
-  FontAwesome,
-  MaterialIcons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 const Home = () => {
   const router = useRouter();
 
   const handlePress = (target) => {
-    router.replace(target);
+    switch (target) {
+      case "Shopping":
+        router.push(`/shopping`);
+        break;
+      case "ToDo":
+        router.push("/todo");
+        break;
+      default:
+        router.push(target);
+    }
   };
 
   const createIcon = (iconName, target) => {

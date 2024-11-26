@@ -23,7 +23,7 @@ import { useAuth } from "../context/AuthContext";
 import { formatGarageTimestamp } from "../utils/Helpers";
 
 const Garage = () => {
-  const { user } = useAuth();
+  const { userData } = useAuth();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [garageLog, setGarageLog] = useState([]);
@@ -31,7 +31,6 @@ const Garage = () => {
   const [sound, setSound] = useState(null);
   const [lostSignalCounter, setLostSignalCounter] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const { allowSound } = useAuth();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -73,14 +72,11 @@ const Garage = () => {
 
   // sound
   async function playSound() {
-    if (!allowSound) return;
-    else {
-      const { sound } = await Audio.Sound.createAsync(
-        require("../assets/update.mp3")
-      );
-      setSound(sound);
-      await sound.playAsync();
-    }
+    const { sound } = await Audio.Sound.createAsync(
+      require("../assets/update.mp3")
+    );
+    setSound(sound);
+    await sound.playAsync();
   }
 
   useEffect(() => {
@@ -123,7 +119,7 @@ const Garage = () => {
         cleanupArray(fixedArray);
         setGarageLog(fixedArray);
         setLoading(false);
-        allowSound && playSound();
+        userData?.options.allowSounds && playSound();
       } else {
         console.log("no data for logs");
       }
