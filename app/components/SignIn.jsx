@@ -19,25 +19,6 @@ const SignIn = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.greetingContainer}>
-        {user && (
-          <>
-            <Text
-              style={
-                (styles.greetingText,
-                {
-                  color: colors.primary,
-                  fontSize: 35,
-                  fontWeight: "500",
-                  marginBottom: 10,
-                })
-              }>
-              Welcome,{" "}
-            </Text>
-            <Text style={styles.greetingText}>{user.email}</Text>
-          </>
-        )}
-      </View>
       <View style={styles.buttonContainer}>
         {!user && (
           <TouchableOpacity

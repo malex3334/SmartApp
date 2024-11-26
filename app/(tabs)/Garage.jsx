@@ -23,6 +23,7 @@ import { useAuth } from "../context/AuthContext";
 import { formatGarageTimestamp } from "../utils/Helpers";
 
 const Garage = () => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [garageLog, setGarageLog] = useState([]);
