@@ -31,13 +31,14 @@ const Home = () => {
 
   const createIcon = (iconName, target) => {
     return (
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handlePress(target)}>
         <MaterialCommunityIcons
           style={styles.buttonText}
           name={iconName}
           color="white"
           size={50}
-          onPress={() => handlePress(target)}
         />
         <Text style={{ color: "white", letterSpacing: 1 }}>{target}</Text>
       </TouchableOpacity>
@@ -82,6 +83,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
+    position: "relative",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-evenly",
@@ -91,7 +93,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.textPrimary,
+    backgroundColor: colors.background,
   },
+
   buttonText: {
     color: colors.textPrimary,
     fontSize: 45,
