@@ -1,6 +1,5 @@
-import { useNavigation, useRouter } from "expo-router";
-import { useAuth } from "../context/AuthContext";
 import { Vibration } from "react-native";
+import * as Haptics from "expo-haptics";
 
 function formatTimestamp(timestamp) {
   const date = new Date(timestamp * 1000);
@@ -54,6 +53,10 @@ export const launchVibrations = (option) => {
       break;
     case "fail":
       Vibration.vibrate([200, 100, 200, 100, 200]);
+      break;
+    case "confirm":
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      break;
     default:
       console.log("def", option);
       Vibration.vibrate([200]);

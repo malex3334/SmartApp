@@ -26,7 +26,7 @@ import SectionTitle from "./components/SectionTitle";
 import colors from "./constans/colors";
 import LineBreak from "./components/LineBreak";
 import ToDoListSingleItem from "./components/ToDoListSingleItem";
-import { launchVibrations, vibrations } from "./utils/Helpers";
+import { launchVibrations } from "./utils/Helpers";
 
 const Todo = () => {
   const collectionRef = collection(firebaseData, "todo");
@@ -39,14 +39,11 @@ const Todo = () => {
 
   const handleReorder = async (data) => {
     const reorderedData = [...data];
-    // setTodoData(data);
     setTodoData(reorderedData);
 
     try {
-      // Create a new batch
       const batch = writeBatch(firebaseData);
 
-      // Loop through the updated data and add update operations to the batch
       for (let i = 0; i < data.length; i++) {
         const todoRef = doc(firebaseData, "todo", data[i].id);
         batch.update(todoRef, {
@@ -137,12 +134,13 @@ const Todo = () => {
     const newStatus =
       currentStatus === "completed" ? "in-progress" : "completed";
     const todoRef = doc(firebaseData, "todo", id);
-    currentStatus !== "completed" && launchVibrations("success");
+
     try {
       await updateDoc(todoRef, {
         "todo.status": newStatus,
       });
 
+      newStatus === "completed" && launchVibrations("success");
       setTodoData((prevData) =>
         prevData.map((item) =>
           item.id === id
@@ -215,7 +213,10 @@ const Todo = () => {
               <View style={styles.modalButtons}>
                 <TouchableOpacity
                   onPress={handleCancel}
-                  style={styles.modalButton}>
+                  style={[
+                    styles.modalButton,
+                    { backgroundColor: "orangered" },
+                  ]}>
                   <Text style={styles.modalButtonText}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -259,6 +260,14 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: "80%",
+    borderColor: "gray",
+    shadowColor: colors.primary,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
   },
   modalTitle: {
     fontSize: 20,
@@ -283,6 +292,9 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "green",
     borderRadius: 5,
+    minWidth: 75,
+    flexDirection: "row",
+    justifyContent: "center",
   },
   modalButtonText: {
     color: "white",

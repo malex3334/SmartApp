@@ -75,7 +75,7 @@ const Remote = () => {
   };
 
   const checkConnection = () => {
-    const ip = "http://192.168.1.25"; // Replace with your actual server IP
+    const ip = "http://192.168.1.25";
     fetch(`${ip}/`)
       .then((response) => {
         if (!response.ok) {
@@ -92,13 +92,13 @@ const Remote = () => {
   };
 
   const sendSignal = (signalName) => {
-    const ip = "http://192.168.1.25"; // Replace with your actual server IP
+    const ip = "http://192.168.1.25";
     fetch(`${ip}/${signalName}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        return response; // Optional: handle the response if necessary
+        return response;
       })
       .then((data) => {
         console.log("Signal sent successfully:", data);
@@ -116,17 +116,14 @@ const Remote = () => {
   };
 
   useEffect(() => {
-    // Set up the interval to check connection every 10 seconds
     const intervalId = setInterval(() => {
       checkConnection();
-    }, 10000); // 10 seconds interval
+    }, 10000);
 
-    // Initial check for connection
     checkConnection();
 
-    // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  }, []);
 
   return (
     <ScrollView

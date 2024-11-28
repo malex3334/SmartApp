@@ -1,19 +1,20 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback } from "react";
 import { NestableDraggableFlatList } from "react-native-draggable-flatlist";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors from "../constans/colors";
 import { useSharedValue } from "react-native-reanimated";
+import { launchVibrations } from "../utils/Helpers";
 
 const ToDoListSingleItem = ({
   todoData,
   handleComplete,
   handleDeleteTodo,
   handleReorder,
-  loading,
 }) => {
   const key = useSharedValue(0);
   const renderItem = useCallback(({ item, drag, isActive }, loading) => {
+    launchVibrations("confirm");
     return (
       <TouchableOpacity
         onLongPress={drag}
@@ -53,12 +54,6 @@ const ToDoListSingleItem = ({
             ]}
             onPress={() => handleDeleteTodo(item.id)}
           />
-          {/* <TouchableOpacity
-            style={styles.dragHandle}
-            onLongPress={drag} // Trigger drag on long press
-          >
-            <MaterialIcons name="drag-indicator" size={30} color="gray" />
-          </TouchableOpacity> */}
         </View>
       </TouchableOpacity>
     );
@@ -72,8 +67,6 @@ const ToDoListSingleItem = ({
         keyExtractor={(item) => item.id}
         onDragEnd={({ data }) => {
           handleReorder(data);
-
-          // setTodoData(data);
         }}
       />
     </View>
