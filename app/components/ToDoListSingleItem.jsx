@@ -11,8 +11,8 @@ const ToDoListSingleItem = ({
   handleComplete,
   handleDeleteTodo,
   handleReorder,
+  handleEditTodo,
 }) => {
-  const key = useSharedValue(0);
   const renderItem = useCallback(({ item, drag, isActive }, loading) => {
     launchVibrations("confirm");
     return (
@@ -44,6 +44,16 @@ const ToDoListSingleItem = ({
           </Text>
         )}
         <View style={styles.iconsContainer}>
+          <MaterialIcons
+            name="edit"
+            size={24}
+            color="gray"
+            style={[
+              styles.icon,
+              item?.todo.status === "completed" && { opacity: 0.7 },
+            ]}
+            onPress={() => handleEditTodo(item.id)}
+          />
           <MaterialIcons
             name="delete"
             size={24}
@@ -114,5 +124,6 @@ const styles = StyleSheet.create({
   iconsContainer: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 10,
   },
 });

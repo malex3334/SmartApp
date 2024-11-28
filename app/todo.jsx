@@ -33,6 +33,9 @@ const Todo = () => {
   const [todoData, setTodoData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newTodoTitle, setNewTodoTitle] = useState("");
+  const [editTodo, setEditTodo] = useState(false);
+  const [editedValue, setEditedValue] = useState("");
+  const [editedTodo, setEditedTodo] = useState();
   const [lastIndex, setLastIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const modalRef = useRef();
@@ -55,24 +58,6 @@ const Todo = () => {
       await batch.commit();
     } catch (error) {
       console.error("Error updating order in Firestore: ", error);
-    }
-  };
-
-  const fetchTodos = async () => {
-    try {
-      setLoading(true);
-      const querySnapshot = await getDocs(collectionRef);
-      const updatedTodos = [];
-      querySnapshot.forEach((doc) => {
-        updatedTodos.push({ id: doc.id, ...doc.data() });
-      });
-      updatedTodos.sort((a, b) => a.todo.order - b.todo.order);
-      setTodoData(updatedTodos);
-      setLastIndex(updatedTodos[0]?.todo.order || 0);
-    } catch (error) {
-      console.error("Error fetching documents: ", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -117,6 +102,8 @@ const Todo = () => {
 
   const handleCancel = () => {
     setModalVisible(false);
+    setEditTodo(false);
+    setEditedValue("");
     setNewTodoTitle("");
   };
 
@@ -127,6 +114,36 @@ const Todo = () => {
       setTodoData((prevData) => prevData.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Error deleting document: ", error);
+    }
+  };
+
+  const handleEditTodo = (id) => {
+    setModalVisible(true);
+    setEditTodo(true);
+    const filtered = todoData.filter((item) => item.id == id);
+    setEditedTodo(filtered[0]);
+    setEditedValue(filtered[0]?.todo.title);
+  };
+
+  const handleSaveEditedTodo = async (id) => {
+    const todoRef = doc(firebaseData, "todo", id);
+    try {
+      // Update the title and any other fields (if needed)
+      await updateDoc(todoRef, {
+        "todo.title": editedValue,
+      });
+      setTodoData((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? { ...item, todo: { ...item.todo, title: editedValue } }
+            : item
+        )
+      );
+
+      setModalVisible(false);
+      setEditedValue("");
+    } catch (error) {
+      console.log("Error updating todo", error);
     }
   };
 
@@ -158,7 +175,7 @@ const Todo = () => {
       <View style={constans.container}>
         <SectionTitle text="TODOS" />
         <LineBreak />
-        {todoData.length > 0 ? (
+        {todoData?.length > 0 ? (
           <NestableScrollContainer>
             <ToDoListSingleItem
               todoData={todoData}
@@ -167,6 +184,7 @@ const Todo = () => {
               handleDeleteTodo={handleDeleteTodo}
               handleReorder={handleReorder}
               setTodoData={setTodoData}
+              handleEditTodo={handleEditTodo}
               loading={loading}
             />
           </NestableScrollContainer>
@@ -202,12 +220,14 @@ const Todo = () => {
         <TouchableWithoutFeedback onPress={handleCancel}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Add New Todo</Text>
+              <Text style={styles.modalTitle}>
+                {editTodo ? "Edit Todo" : "Add New Todo"}
+              </Text>
               <TextInput
                 style={styles.input}
                 placeholder="Enter todo title"
-                value={newTodoTitle}
-                onChangeText={setNewTodoTitle}
+                value={editTodo ? editedValue : newTodoTitle}
+                onChangeText={editTodo ? setEditedValue : setNewTodoTitle}
                 ref={modalRef}
               />
               <View style={styles.modalButtons}>
@@ -220,9 +240,15 @@ const Todo = () => {
                   <Text style={styles.modalButtonText}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={handleAddTodo}
+                  onPress={
+                    editTodo
+                      ? () => handleSaveEditedTodo(editedTodo.id)
+                      : handleAddTodo
+                  }
                   style={styles.modalButton}>
-                  <Text style={styles.modalButtonText}>Add</Text>
+                  <Text style={styles.modalButtonText}>
+                    {editTodo ? "Edit" : "Add"}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
