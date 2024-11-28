@@ -1,5 +1,6 @@
 import { useNavigation, useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
+import { Vibration } from "react-native";
 
 function formatTimestamp(timestamp) {
   const date = new Date(timestamp * 1000);
@@ -44,3 +45,17 @@ export function formatGarageTimestamp(timestamp, options) {
   // };
   return date.toLocaleDateString("pl-PL", options);
 }
+
+export const launchVibrations = (option) => {
+  switch (option) {
+    case "success":
+      console.log(option);
+      Vibration.vibrate([200, 100, 500]);
+      break;
+    case "fail":
+      Vibration.vibrate([200, 100, 200, 100, 200]);
+    default:
+      console.log("def", option);
+      Vibration.vibrate([200]);
+  }
+};

@@ -1,26 +1,26 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useCallback, useRef } from "react";
 import { NestableDraggableFlatList } from "react-native-draggable-flatlist";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors from "../constans/colors";
+import { useSharedValue } from "react-native-reanimated";
 
 const ToDoListSingleItem = ({
   todoData,
   handleComplete,
   handleDeleteTodo,
   handleReorder,
-  setTodoData,
   loading,
 }) => {
-  const renderItem = useCallback(({ item, drag, isActive }) => {
+  const key = useSharedValue(0);
+  const renderItem = useCallback(({ item, drag, isActive }, loading) => {
     return (
-      <View style={styles.itemContainer}>
+      <TouchableOpacity
+        onLongPress={drag}
+        style={[
+          styles.itemContainer,
+          // isActive && { transform: "scale(1.05)" },
+        ]}>
         <TouchableOpacity
           style={[
             styles.checkBox,
@@ -33,13 +33,15 @@ const ToDoListSingleItem = ({
             <Text style={{ color: "white", fontSize: 16 }}>✔</Text>
           )}
         </TouchableOpacity>
-        <Text
-          style={[
-            styles.itemText,
-            item?.todo.status === "completed" && styles.completed,
-          ]}>
-          {item?.todo.title}
-        </Text>
+        {!loading && (
+          <Text
+            style={[
+              styles.itemText,
+              item?.todo.status === "completed" && styles.completed,
+            ]}>
+            {item?.todo.title}
+          </Text>
+        )}
         <View style={styles.iconsContainer}>
           <MaterialIcons
             name="delete"
@@ -51,14 +53,14 @@ const ToDoListSingleItem = ({
             ]}
             onPress={() => handleDeleteTodo(item.id)}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.dragHandle}
             onLongPress={drag} // Trigger drag on long press
           >
             <MaterialIcons name="drag-indicator" size={30} color="gray" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }, []);
 
@@ -82,8 +84,8 @@ export default ToDoListSingleItem;
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 10,
-    marginVertical: 2,
+    padding: 8,
+    marginVertical: 3,
     borderRadius: 5,
     backgroundColor: "rgba(255,255,255,0.1)",
     flexDirection: "row",
@@ -91,7 +93,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   itemText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 200,
     color: colors.textPrimary,
     letterSpacing: 1.5,
     position: "relative",
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
   },
   checkBox: {
     position: "absolute",
-    top: 12,
+    top: "35%",
     left: 12,
     width: 24,
     height: 24,
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   icon: {
-    marginRight: 15,
+    marginRight: 5,
   },
   dragHandle: {
     paddingLeft: 10,

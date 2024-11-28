@@ -14,6 +14,7 @@ import {
   onSnapshot,
   collection,
   doc,
+  writeBatch,
   updateDoc,
   addDoc,
   deleteDoc,
@@ -25,6 +26,7 @@ import SectionTitle from "./components/SectionTitle";
 import colors from "./constans/colors";
 import LineBreak from "./components/LineBreak";
 import ToDoListSingleItem from "./components/ToDoListSingleItem";
+import { launchVibrations, vibrations } from "./utils/Helpers";
 
 const Todo = () => {
   const collectionRef = collection(firebaseData, "todo");
@@ -36,14 +38,24 @@ const Todo = () => {
   const modalRef = useRef();
 
   const handleReorder = async (data) => {
-    setTodoData(data);
+    const reorderedData = [...data];
+    // setTodoData(data);
+    setTodoData(reorderedData);
+
     try {
+      // Create a new batch
+      const batch = writeBatch(firebaseData);
+
+      // Loop through the updated data and add update operations to the batch
       for (let i = 0; i < data.length; i++) {
         const todoRef = doc(firebaseData, "todo", data[i].id);
-        await updateDoc(todoRef, {
+        batch.update(todoRef, {
           "todo.order": i,
         });
       }
+
+      // Commit the batch operation
+      await batch.commit();
     } catch (error) {
       console.error("Error updating order in Firestore: ", error);
     }
@@ -68,7 +80,6 @@ const Todo = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
     const unsubscribe = onSnapshot(
       collectionRef,
       (querySnapshot) => {
@@ -79,11 +90,9 @@ const Todo = () => {
         updatedTodos.sort((a, b) => a.todo.order - b.todo.order);
         setTodoData(updatedTodos);
         setLastIndex(updatedTodos[0]?.todo.order);
-        setLoading(false);
       },
       (error) => {
         console.error("Error fetching documents: ", error);
-        setLoading(false);
       }
     );
 
@@ -128,7 +137,7 @@ const Todo = () => {
     const newStatus =
       currentStatus === "completed" ? "in-progress" : "completed";
     const todoRef = doc(firebaseData, "todo", id);
-
+    currentStatus !== "completed" && launchVibrations("success");
     try {
       await updateDoc(todoRef, {
         "todo.status": newStatus,
@@ -151,17 +160,28 @@ const Todo = () => {
       <View style={constans.container}>
         <SectionTitle text="TODOS" />
         <LineBreak />
-        <NestableScrollContainer>
-          <ToDoListSingleItem
-            todoData={todoData}
-            handleComplete={handleComplete}
-            handleAddTodo={handleAddTodo}
-            handleDeleteTodo={handleDeleteTodo}
-            handleReorder={handleReorder}
-            setTodoData={setTodoData}
-            loading={loading}
-          />
-        </NestableScrollContainer>
+        {todoData.length > 0 ? (
+          <NestableScrollContainer>
+            <ToDoListSingleItem
+              todoData={todoData}
+              handleComplete={handleComplete}
+              handleAddTodo={handleAddTodo}
+              handleDeleteTodo={handleDeleteTodo}
+              handleReorder={handleReorder}
+              setTodoData={setTodoData}
+              loading={loading}
+            />
+          </NestableScrollContainer>
+        ) : (
+          <View
+            style={{
+              flex: 0.25,
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <Text style={{ color: "white" }}>no todos</Text>
+          </View>
+        )}
 
         <TouchableOpacity
           style={styles.buttonContainer}
