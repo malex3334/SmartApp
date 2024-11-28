@@ -93,6 +93,20 @@ export const AuthProvider = ({ children }) => {
       console.error("Error updating allowSounds:", error);
     }
   };
+  const handleLangChange = async (newValue) => {
+    try {
+      const userDocRef = doc(firebaseData, "users", auth?.currentUser?.uid);
+      await updateDoc(userDocRef, {
+        "options.lang": newValue,
+      });
+      setUser((prev) => ({
+        ...prev,
+        options: { ...prev.options, lang: newValue },
+      }));
+    } catch (error) {
+      console.error("Error updating lang:", error);
+    }
+  };
 
   const handleNameChange = async (newValue) => {
     try {
@@ -105,7 +119,7 @@ export const AuthProvider = ({ children }) => {
         data: { ...prev, name: newValue },
       }));
     } catch (error) {
-      console.error("Error updating allowSounds:", error);
+      console.error("Error updating name:", error);
     }
   };
 
@@ -118,6 +132,7 @@ export const AuthProvider = ({ children }) => {
         signOut,
         handleSoundToggle,
         handleNameChange,
+        handleLangChange,
       }}>
       {children}
     </AuthContext.Provider>

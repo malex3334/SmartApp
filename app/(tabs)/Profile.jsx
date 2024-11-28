@@ -12,14 +12,26 @@ import constans from "../constans/styling";
 import SectionTitle from "../components/SectionTitle";
 import LineBreak from "../components/LineBreak";
 import SignIn from "../components/SignIn";
+import OptionComponent from "../components/OptionComponent";
 import { useAuth } from "../context/AuthContext";
 import colors from "../constans/colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const Profile = () => {
-  const { user, userData, handleSoundToggle, handleNameChange } = useAuth();
+  const {
+    user,
+    userData,
+    handleSoundToggle,
+    handleNameChange,
+    handleLangChange,
+  } = useAuth();
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(userData?.name);
+  const [optionValue, setOptionsValue] = useState(userData?.options.lang);
+  const [options, setOptions] = useState([
+    { label: "PL", value: "pl" },
+    { label: "ENG", value: "en" },
+  ]);
 
   const toggleEdit = () => setEdit((prev) => !prev);
 
@@ -28,6 +40,11 @@ const Profile = () => {
     toggleEdit();
   };
 
+  const saveLang = () => {
+    handleLangChange(optionValue);
+  };
+
+  console.log(optionValue);
   if (!userData) return null;
 
   return (
@@ -70,6 +87,18 @@ const Profile = () => {
               onValueChange={handleSoundToggle}
             />
           </View>
+          <View style={styles.singleOptionContainer}>
+            <Text style={[styles.label, { flex: 1 }]}>Language:</Text>
+            <View style={styles.optionComponentContainer}>
+              <OptionComponent
+                options={options}
+                setOptions={setOptions}
+                value={optionValue}
+                setValue={setOptionsValue}
+                saveLang={saveLang}
+              />
+            </View>
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -110,9 +139,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginVertical: 10,
   },
   label: {
     color: colors.textPrimary,
     fontSize: 18,
+    marginRight: 10, // Add some space between label and dropdown
   },
+  optionComponentContainer: {},
 });
