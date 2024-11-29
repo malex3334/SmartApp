@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "eas-cli": "^13.4.2",
     "react-native-svg-transformer": "^1.5.0"
   },
   "private": true

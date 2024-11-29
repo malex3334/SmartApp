@@ -5,10 +5,10 @@ module.exports = {
     [
       "module:react-native-dotenv",
       {
-        moduleName: "@env",
-        path: ".env",
-        safe: false,
-        allowUndefined: true,
+        moduleName: "@env", // this is how you'll import variables
+        path: ".env", // point to your .env file
+        safe: false, // set to true if you want stricter type checking
+        allowUndefined: true, // allow undefined environment variables
       },
     ],
   ],
