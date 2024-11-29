@@ -1,17 +1,17 @@
 import { StatusBar, StyleSheet } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import GarageIcon from "../assets/garage.svg";
-import HomeIcon from "../assets/house.svg";
-import Weather from "../assets/weather.svg";
-import Remote from "../assets/hashtag.svg";
+import GarageIcon from "../../assets/garage.svg";
+import HomeIcon from "../../assets/house.svg";
+import Weather from "../../assets/weather.svg";
+import Remote from "../../assets/hashtag.svg";
 import {
   FontAwesome,
   MaterialIcons,
   MaterialCommunityIcons,
   Ionicons,
 } from "@expo/vector-icons";
-import User from "../assets/user-solid.svg";
+import User from "../../assets/user-solid.svg";
 import colors from "../constans/colors";
 import { useColorScheme } from "react-native";
 

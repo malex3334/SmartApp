@@ -11,8 +11,8 @@ import {
 import React, { useEffect, useState, useCallback } from "react";
 import { database, firestore } from "../../FirebaseConfig";
 import { onValue, ref } from "firebase/database";
-import TermometerIcon from "../assets/termometer.svg";
-import HumidityIcon from "../assets/droplet.svg";
+import TermometerIcon from "../../assets/termometer.svg";
+import HumidityIcon from "../../assets/droplet.svg";
 import colors from "../constans/colors";
 import { Audio } from "expo-av";
 import LineBreak from "../components/LineBreak";
@@ -73,7 +73,7 @@ const Garage = () => {
   // sound
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync(
-      require("../assets/update.mp3")
+      require("../../assets/update.mp3")
     );
     setSound(sound);
     await sound.playAsync();

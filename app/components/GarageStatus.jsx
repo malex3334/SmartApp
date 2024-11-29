@@ -6,10 +6,10 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import GarageIcon from "../assets/garage.svg";
-import WifiIcon from "../assets/wifi.svg";
-import WifiLowIcon from "../assets/wifilow.svg";
-import WifiMidIcon from "../assets/wifimid.svg";
+import GarageIcon from "../../assets/garage.svg";
+import WifiIcon from "../../assets/wifi.svg";
+import WifiLowIcon from "../../assets/wifilow.svg";
+import WifiMidIcon from "../../assets/wifimid.svg";
 import colors from "../constans/colors";
 import { formatGarageTimestamp } from "../utils/Helpers";
 import { MaterialCommunityIcons } from "@expo/vector-icons";

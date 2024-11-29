@@ -21,28 +21,26 @@ const ToDoListSingleItem = ({
   const triggerBounce = (bounceAnim) => {
     Animated.sequence([
       Animated.spring(bounceAnim, {
-        toValue: 1.1,
-        friction: 2,
+        toValue: 0.9,
+        friction: 5,
         useNativeDriver: true,
       }),
       Animated.spring(bounceAnim, {
         toValue: 1,
-        friction: 3,
+        friction: 2,
         useNativeDriver: true,
       }),
     ]).start();
   };
 
-  const renderItem = useCallback(({ item, drag, isActive }) => {
+  const renderItem = useCallback(({ item, index, drag, isActive }) => {
     const bounceAnim = React.useRef(new Animated.Value(1)).current;
     launchVibrations("confirm");
-
     const handleAnimation = (status) => {
       if (status !== "completed") {
         triggerBounce(bounceAnim);
       }
     };
-
     return (
       <Animated.View
         style={{

@@ -15,7 +15,7 @@ import { useAuth } from "./context/AuthContext";
 import SectionTitle from "./components/SectionTitle";
 import LineBreak from "./components/LineBreak";
 import constans from "./constans/styling";
-import HeroImg from "./assets/Hero.jpg";
+import HeroImg from "../assets/Hero.jpg";
 
 const Index = () => {
   const { user } = useAuth();
