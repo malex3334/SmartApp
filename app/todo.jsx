@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
   Animated,
+  Touchable,
 } from "react-native";
 import { firebaseData } from "../FirebaseConfig";
 import {
@@ -28,12 +29,14 @@ import colors from "./constans/colors";
 import LineBreak from "./components/LineBreak";
 import ToDoListSingleItem from "./components/ToDoListSingleItem";
 import { launchVibrations } from "./utils/Helpers";
+import TodoCategory from "./components/TodoCategory";
 
 const Todo = () => {
   const collectionRef = collection(firebaseData, "todo");
   const [todoData, setTodoData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newTodoTitle, setNewTodoTitle] = useState("");
+  const [newTodoCategory, setNewTodoCategory] = useState();
   const [editTodo, setEditTodo] = useState(false);
   const [editedValue, setEditedValue] = useState("");
   const [editedTodo, setEditedTodo] = useState();
@@ -91,6 +94,7 @@ const Todo = () => {
           title: newTodoTitle,
           status: "in-progress",
           order: lastIndex ? lastIndex + 1 : 0,
+          category: newTodoCategory ? newTodoCategory : "",
         },
       });
 
@@ -106,6 +110,7 @@ const Todo = () => {
     setEditTodo(false);
     setEditedValue("");
     setNewTodoTitle("");
+    setNewTodoCategory();
   };
 
   const handleDeleteTodo = async (id) => {
@@ -124,6 +129,7 @@ const Todo = () => {
     const filtered = todoData.filter((item) => item.id == id);
     setEditedTodo(filtered[0]);
     setEditedValue(filtered[0]?.todo.title);
+    setNewTodoCategory(filtered[0]?.todo.category);
   };
 
   const handleSaveEditedTodo = async (id) => {
@@ -132,11 +138,19 @@ const Todo = () => {
       // Update the title and any other fields (if needed)
       await updateDoc(todoRef, {
         "todo.title": editedValue,
+        "todo.category": newTodoCategory,
       });
       setTodoData((prev) =>
         prev.map((item) =>
           item.id === id
-            ? { ...item, todo: { ...item.todo, title: editedValue } }
+            ? {
+                ...item,
+                todo: {
+                  ...item.todo,
+                  title: editedValue,
+                  category: newTodoCategory,
+                },
+              }
             : item
         )
       );
@@ -174,7 +188,11 @@ const Todo = () => {
   return (
     <View style={constans.scrollContainer}>
       <View style={constans.container}>
-        <SectionTitle text="TODOS" />
+        <SectionTitle
+          text={`TODOS ${
+            todoData.filter((item) => item?.todo.status === "completed").length
+          }/${todoData?.length}`}
+        />
         <LineBreak />
         {todoData?.length > 0 ? (
           <NestableScrollContainer>
@@ -231,6 +249,29 @@ const Todo = () => {
                 onChangeText={editTodo ? setEditedValue : setNewTodoTitle}
                 ref={modalRef}
               />
+              <Text style={{ color: "white", padding: 10 }}>Category</Text>
+              <View style={styles.modalCategoryContainer}>
+                <TodoCategory
+                  category="red"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+                <TodoCategory
+                  category="orange"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+                <TodoCategory
+                  category="yellow"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+                <TodoCategory
+                  category="green"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+              </View>
               <View style={styles.modalButtons}>
                 <TouchableOpacity
                   onPress={handleCancel}
@@ -326,5 +367,11 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: "white",
     fontSize: 16,
+  },
+
+  modalCategoryContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginBottom: 30,
   },
 });

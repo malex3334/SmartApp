@@ -43,10 +43,17 @@ const ToDoListSingleItem = ({
     };
     return (
       <Animated.View
-        style={{
-          transform: [{ scale: bounceAnim }],
-        }}>
-        <TouchableOpacity onLongPress={drag} style={styles.itemContainer}>
+        style={[
+          {
+            transform: [{ scale: bounceAnim }],
+          },
+        ]}>
+        <TouchableOpacity
+          onLongPress={drag}
+          style={[
+            styles.itemContainer,
+            { borderColor: item?.todo.category && item?.todo.category },
+          ]}>
           <TouchableOpacity
             style={[
               styles.checkBox,
@@ -121,14 +128,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    borderLeftWidth: 3,
   },
   itemText: {
-    fontSize: 18,
-    fontWeight: 200,
+    fontSize: 14,
+    fontWeight: 300,
     color: colors.textPrimary,
     letterSpacing: 1.5,
     position: "relative",
     marginLeft: 40,
+    maxWidth: "65%",
   },
   checkBox: {
     position: "absolute",
