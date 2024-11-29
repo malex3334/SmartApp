@@ -1,9 +1,14 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useCallback } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import React, { useCallback, useState } from "react";
 import { NestableDraggableFlatList } from "react-native-draggable-flatlist";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors from "../constans/colors";
-import { useSharedValue } from "react-native-reanimated";
 import { launchVibrations } from "../utils/Helpers";
 
 const ToDoListSingleItem = ({
@@ -13,28 +18,52 @@ const ToDoListSingleItem = ({
   handleReorder,
   handleEditTodo,
 }) => {
-  const renderItem = useCallback(({ item, drag, isActive }, loading) => {
+  const triggerBounce = (bounceAnim) => {
+    Animated.sequence([
+      Animated.spring(bounceAnim, {
+        toValue: 1.1,
+        friction: 2,
+        useNativeDriver: true,
+      }),
+      Animated.spring(bounceAnim, {
+        toValue: 1,
+        friction: 3,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const renderItem = useCallback(({ item, drag, isActive }) => {
+    const bounceAnim = React.useRef(new Animated.Value(1)).current;
     launchVibrations("confirm");
+
+    const handleAnimation = (status) => {
+      if (status !== "completed") {
+        triggerBounce(bounceAnim);
+      }
+    };
+
     return (
-      <TouchableOpacity
-        onLongPress={drag}
-        style={[
-          styles.itemContainer,
-          // isActive && { transform: "scale(1.05)" },
-        ]}>
-        <TouchableOpacity
-          style={[
-            styles.checkBox,
-            item?.todo.status === "completed"
-              ? { backgroundColor: "rgba(255,255,255,0.2)" }
-              : { backgroundColor: "white" },
-          ]}
-          onPress={() => handleComplete(item?.id, item?.todo.status)}>
-          {item?.todo.status === "completed" && (
-            <Text style={{ color: "white", fontSize: 16 }}>✔</Text>
-          )}
-        </TouchableOpacity>
-        {!loading && (
+      <Animated.View
+        style={{
+          transform: [{ scale: bounceAnim }],
+        }}>
+        <TouchableOpacity onLongPress={drag} style={styles.itemContainer}>
+          <TouchableOpacity
+            style={[
+              styles.checkBox,
+              item?.todo.status === "completed"
+                ? { borderColor: "rgba(255,255,255,0.2)" }
+                : { borderColor: "rgba(255,255,255,0.5)" },
+            ]}
+            onPress={() => {
+              handleComplete(item?.id, item?.todo.status);
+              handleAnimation(item?.todo.status);
+            }}>
+            {item?.todo.status === "completed" && (
+              <Text style={{ color: "white", fontSize: 16 }}>✔</Text>
+            )}
+          </TouchableOpacity>
           <Text
             style={[
               styles.itemText,
@@ -42,30 +71,30 @@ const ToDoListSingleItem = ({
             ]}>
             {item?.todo.title}
           </Text>
-        )}
-        <View style={styles.iconsContainer}>
-          <MaterialIcons
-            name="edit"
-            size={24}
-            color="gray"
-            style={[
-              styles.icon,
-              item?.todo.status === "completed" && { opacity: 0.7 },
-            ]}
-            onPress={() => handleEditTodo(item.id)}
-          />
-          <MaterialIcons
-            name="delete"
-            size={24}
-            color="red"
-            style={[
-              styles.icon,
-              item?.todo.status === "completed" && { opacity: 0.7 },
-            ]}
-            onPress={() => handleDeleteTodo(item.id)}
-          />
-        </View>
-      </TouchableOpacity>
+          <View style={styles.iconsContainer}>
+            <MaterialIcons
+              name="edit"
+              size={24}
+              color="gray"
+              style={[
+                styles.icon,
+                item?.todo.status === "completed" && { opacity: 0.7 },
+              ]}
+              onPress={() => handleEditTodo(item.id)}
+            />
+            <MaterialIcons
+              name="delete"
+              size={24}
+              color="red"
+              style={[
+                styles.icon,
+                item?.todo.status === "completed" && { opacity: 0.7 },
+              ]}
+              onPress={() => handleDeleteTodo(item.id)}
+            />
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
     );
   }, []);
 
@@ -110,7 +139,9 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 5,
-    backgroundColor: "white",
+    borderColor: "white",
+    borderWidth: 1,
+    // backgroundColor: "white",
   },
   completed: {
     color: "gray",

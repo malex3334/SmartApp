@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import { firebaseData } from "../FirebaseConfig";
 import {
