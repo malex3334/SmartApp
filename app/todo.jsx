@@ -42,6 +42,8 @@ const Todo = () => {
   const [editedTodo, setEditedTodo] = useState();
   const [lastIndex, setLastIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [completedCount, setCompletedCount] = useState();
+  const [todosCount, setTodosCount] = useState();
   const modalRef = useRef();
 
   const handleReorder = async (data) => {
@@ -185,13 +187,27 @@ const Todo = () => {
     }
   };
 
+  useEffect(() => {
+    const filterCompleted = todoData?.filter(
+      (item) => item?.todo.status === "completed"
+    ).length;
+    setCompletedCount(filterCompleted);
+
+    const allTodos = todoData?.length;
+    setTodosCount(allTodos);
+  }, [todoData]);
+
   return (
     <View style={constans.scrollContainer}>
       <View style={constans.container}>
         <SectionTitle
-          text={`TODOS ${
-            todoData.filter((item) => item?.todo.status === "completed").length
-          }/${todoData?.length}`}
+          text={`TODOS ${completedCount} / ${todosCount}${
+            todosCount == completedCount ? " 🎉" : ""
+          }`}
+
+          // text={`TODOS ${
+          //   todoData.filter((item) => item?.todo.status === "completed").length
+          // }/${todoData?.length} `}
         />
         <LineBreak />
         {todoData?.length > 0 ? (

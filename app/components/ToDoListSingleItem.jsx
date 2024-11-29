@@ -131,10 +131,10 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
   },
   itemText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 300,
     color: colors.textPrimary,
-    letterSpacing: 1.5,
+    letterSpacing: 1,
     position: "relative",
     marginLeft: 40,
     maxWidth: "65%",

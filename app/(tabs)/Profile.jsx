@@ -15,7 +15,7 @@ import SignIn from "../components/SignIn";
 import OptionComponent from "../components/OptionComponent";
 import { useAuth } from "../context/AuthContext";
 import colors from "../constans/colors";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 const Profile = () => {
   const {
@@ -58,6 +58,7 @@ const Profile = () => {
           <Text style={[styles.greetingText, { color: colors.primary }]}>
             Welcome,
           </Text>
+          <FontAwesome size={100} color="white" name="user" />
           {edit ? (
             <View style={styles.inputContainer}>
               <TextInput
@@ -80,6 +81,10 @@ const Profile = () => {
         </View>
         <SignIn />
         <View style={styles.optionsContainer}>
+          <LineBreak />
+          <View style={styles.optionsHeaderContainer}>
+            <Text style={styles.optionsHeader}>Options</Text>
+          </View>
           <View style={styles.singleOptionContainer}>
             <Text style={styles.label}>Allow sounds:</Text>
             <Switch
@@ -112,6 +117,8 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 15,
     marginBottom: 20,
+    alignItems: "center",
+    gap: 10,
   },
   greetingText: {
     color: "white",
@@ -147,4 +154,14 @@ const styles = StyleSheet.create({
     marginRight: 10, // Add some space between label and dropdown
   },
   optionComponentContainer: {},
+
+  optionsHeaderContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  optionsHeader: {
+    color: colors.textPrimary,
+    fontSize: 24,
+    letterSpacing: 1.5,
+  },
 });

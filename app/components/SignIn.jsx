@@ -10,6 +10,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import colors from "../constans/colors";
 import { USER_NAME, USER_PASSWORD } from "@env";
+import LineBreak from "./LineBreak";
 
 const SignIn = () => {
   const { user, signIn, signOut } = useAuth();
