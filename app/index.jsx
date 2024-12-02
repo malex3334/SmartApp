@@ -5,29 +5,31 @@ import {
   useColorScheme,
   Image,
   Text,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import colors from "./constans/colors";
 import { StatusBar } from "expo-status-bar";
-import SignIn from "./components/SignIn";
 import { useAuth } from "./context/AuthContext";
 import SectionTitle from "./components/SectionTitle";
 import LineBreak from "./components/LineBreak";
 import constans from "./constans/styling";
 import HeroImg from "../assets/Hero.jpg";
+import { FirebaseError } from "../FirebaseConfig";
 
 const Index = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const [signFormOpen, setSignFormOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
       router.replace("/(tabs)/Garage");
     }
-  }, [user, router]); // The effect will run when `user` changes
+  }, [user, router]);
 
   if (!user) {
     return (
@@ -36,9 +38,9 @@ const Index = () => {
         contentContainerStyle={constans.scrollContainer}>
         <View style={[constans.container]}>
           <StatusBar
-            barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} // Sets text/icon color
-            backgroundColor={colorScheme === "dark" ? "black" : "white"} // Sets background color
-            translucent={true} // Ensure status bar doesn't overlap content
+            barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
+            backgroundColor={colorScheme === "dark" ? "black" : "white"}
+            translucent={true}
           />
           <SectionTitle text="Smart APP" />
           <LineBreak />
@@ -46,7 +48,20 @@ const Index = () => {
             <Image source={HeroImg} style={styles.image} />
             <Text style={[styles.heroText, {}]}>log in... |</Text>
           </View>
-          <SignIn />
+          <Text
+            style={{
+              color: "red",
+              fontSize: 25,
+              zIndex: 999,
+              textAlign: "center",
+            }}>
+            {FirebaseError ? FirebaseError.message : "fb ok"}
+          </Text>
+          <TouchableOpacity
+            style={constans.touchableButton}
+            onPress={() => router.push("LoginForm")}>
+            <Text style={constans.touchableButtonText}>Sign in</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
@@ -95,12 +110,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: colors.background,
-    // maxWidth: 400,
   },
 
   cardContainer: {
     maxWidth: "100%",
-    margin: 5, // Add some spacing between cards
+    margin: 5,
     borderColor: "gray",
     borderWidth: 1,
     justifyContent: "center",
@@ -119,7 +133,7 @@ const styles = StyleSheet.create({
     bottom: 75,
     right: 110,
     fontSize: 40,
-    // color: "orangered",
+
     color: "white",
     fontWeight: "bold",
     paddingVertical: 10,
@@ -135,7 +149,6 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 400,
-    // borderWidth: 3,
 
     borderRadius: 10,
     borderColor: colors.primary,

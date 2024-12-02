@@ -30,6 +30,17 @@ const constans = {
     textAlign: "center",
     marginTop: 20,
   },
+
+  touchableButton: {
+    backgroundColor: colors.primary,
+  },
+
+  touchableButtonText: {
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: "bold",
+    padding: 10,
+  },
 };
 
 export default constans;
