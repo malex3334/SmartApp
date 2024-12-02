@@ -21,22 +21,18 @@ import { weatherImages } from "../utils/imageMapping";
 import { getHours } from "../utils/Helpers";
 import WeatherDetailCard from "../components/WeatherDetailCard";
 import { useAuth } from "../context/AuthContext";
-import { useNavigation } from "expo-router";
 import { WEATHERAPI_KEY } from "@env";
 import TabContainer from "../components/TabContainer";
+import { useRouter } from "expo-router";
+import Constants from "expo-constants";
 
 const Weather = () => {
   const [data, setData] = useState(null);
   const [foreCast, setForecast] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const navigation = useNavigation();
-
-  const { user } = useAuth();
-  useEffect(() => {
-    //checklogin
-    !user && navigation.navigate("index");
-  }, [user]);
+  const router = useRouter();
+  const apiKey = Constants.mainfest.extra.API_KEY;
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -46,7 +42,7 @@ const Weather = () => {
     }, 2000);
   }, []);
 
-  const apiKey = WEATHERAPI_KEY;
+  // const apiKey = WEATHERAPI_KEY;
 
   const fetchForecast = async () => {
     const lon = "17.295170";

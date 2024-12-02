@@ -17,13 +17,8 @@ import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import TabContainer from "../components/TabContainer";
 
 const Profile = () => {
-  const {
-    user,
-    userData,
-    handleSoundToggle,
-    handleNameChange,
-    handleLangChange,
-  } = useAuth();
+  const { userData, handleSoundToggle, handleNameChange, handleLangChange } =
+    useAuth();
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(userData?.name);
   const [optionValue, setOptionsValue] = useState(userData?.options.lang);
@@ -43,7 +38,6 @@ const Profile = () => {
     handleLangChange(optionValue);
   };
 
-  console.log(optionValue);
   if (!userData) return null;
 
   return (

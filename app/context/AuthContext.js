@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState();
   const [rerender, setRerender] = useState(false);
+  const [loginError, setLoginError] = useState("");
   const navigation = useNavigation();
 
   console.log(auth);
@@ -39,7 +40,11 @@ export const AuthProvider = ({ children }) => {
       setRerender((prev) => !prev);
     } catch (error) {
       console.log("Sign-in error:", error.message);
+      setLoginError(error.message);
       setUser(null);
+      setTimeout(() => {
+        setLoginError("");
+      }, 5000);
     }
   };
 
@@ -133,6 +138,7 @@ export const AuthProvider = ({ children }) => {
         handleSoundToggle,
         handleNameChange,
         handleLangChange,
+        loginError,
       }}>
       {children}
     </AuthContext.Provider>

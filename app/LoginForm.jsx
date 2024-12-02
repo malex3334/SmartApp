@@ -18,7 +18,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState("alex3334@gmail.com");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { user, signIn } = useAuth();
+  const { user, signIn, loginError } = useAuth();
   const router = useRouter();
 
   const validateForm = () => {
@@ -97,6 +97,9 @@ const LoginForm = () => {
             onPress={handleSubmit}>
             <Text style={constans.touchableButtonText}>Login</Text>
           </TouchableOpacity>
+          {loginError != "" && (
+            <Text style={styles.errorText}>{loginError}</Text>
+          )}
         </View>
       </View>
     );
@@ -128,5 +131,12 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 16,
     fontWeight: "bold",
+  },
+  errorText: {
+    color: "red",
+    letterSpacing: 1.5,
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
   },
 });

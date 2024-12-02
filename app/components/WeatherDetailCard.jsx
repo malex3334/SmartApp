@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native"; // Import ActivityIndicator
-import React, { useState } from "react";
+import React from "react";
 import colors from "../constans/colors";
 
 const WeatherDetailCard = ({ icon: Icon, value, unit, color, loading }) => {
