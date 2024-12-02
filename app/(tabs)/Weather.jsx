@@ -23,6 +23,7 @@ import WeatherDetailCard from "../components/WeatherDetailCard";
 import { useAuth } from "../context/AuthContext";
 import { useNavigation } from "expo-router";
 import { WEATHERAPI_KEY } from "@env";
+import TabContainer from "../components/TabContainer";
 
 const Weather = () => {
   const [data, setData] = useState(null);
@@ -111,139 +112,124 @@ const Weather = () => {
 
   if (!loading) {
     return (
-      // <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        style={{ backgroundColor: colors.background }}
-        contentContainerStyle={[constans.scrollContainer, { flexGrow: 0 }]}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <View style={[constans.container]}>
-          <SectionTitle text="Weather" />
-          <LineBreak />
-          <Text style={styles.cityName}>{data?.name}</Text>
-          <View style={{ flexDirection: "column" }}>
-            <View style={styles.currentContainer}>
-              <View
-                style={[
-                  styles.currentWeatherCard,
-                  { justifyContent: "center" },
-                ]}>
-                <Image
-                  source={mapImage(data?.weather[0].icon)}
-                  style={styles.currentImage}
-                />
-                <View style={styles.daylengthContainer}>
-                  <View style={styles.daylengthDataContainer}>
-                    <Image
-                      source={weatherImages.sunny}
-                      style={{ width: 18, height: 18 }}
-                    />
-                    <Text style={styles.daylengthText}>
-                      {getHours(data?.sys.sunrise)}
-                    </Text>
-                  </View>
-                  <View style={styles.daylengthDataContainer}>
-                    <Image
-                      source={weatherImages.cloudyN}
-                      style={{ width: 18, height: 18 }}
-                    />
-                    <Text style={styles.daylengthText}>
-                      {getHours(data?.sys.sunset)}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <View
-                style={[
-                  styles.currentWeatherCard,
-                  {
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    flexGrow: 1.25,
-                    borderWidth: 1,
-                    borderColor: colors.primary,
-                    marginBottom: 10,
-                    marginTop: 10,
-                  },
-                ]}>
-                <View
-                  style={{ flexDirection: "row", alignContent: "flex-end" }}>
-                  {loading ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <Text style={styles.currentTemp}>
-                      {data?.main.temp.toFixed(1)}
-                    </Text>
-                  )}
-                  <Text
-                    style={[
-                      styles.currentTemp,
-                      { fontSize: 50, fontWeight: "100" },
-                    ]}>
-                    °C
+      <TabContainer>
+        <SectionTitle text="Weather" />
+        <LineBreak />
+        <Text style={styles.cityName}>{data?.name}</Text>
+        <View style={{ flexDirection: "column" }}>
+          <View style={styles.currentContainer}>
+            <View
+              style={[styles.currentWeatherCard, { justifyContent: "center" }]}>
+              <Image
+                source={mapImage(data?.weather[0].icon)}
+                style={styles.currentImage}
+              />
+              <View style={styles.daylengthContainer}>
+                <View style={styles.daylengthDataContainer}>
+                  <Image
+                    source={weatherImages.sunny}
+                    style={{ width: 18, height: 18 }}
+                  />
+                  <Text style={styles.daylengthText}>
+                    {getHours(data?.sys.sunrise)}
                   </Text>
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 20,
-                  }}>
-                  <Text
-                    style={[
-                      styles.currentMinMax,
-                      { backgroundColor: colors.hmd },
-                    ]}>
-                    {data?.main.temp_min.toFixed(1)}°C
-                  </Text>
-                  <Text
-                    style={[
-                      styles.currentMinMax,
-                      { backgroundColor: "orangered" },
-                    ]}>
-                    {data?.main.temp_max.toFixed(1)}°C
+                <View style={styles.daylengthDataContainer}>
+                  <Image
+                    source={weatherImages.cloudyN}
+                    style={{ width: 18, height: 18 }}
+                  />
+                  <Text style={styles.daylengthText}>
+                    {getHours(data?.sys.sunset)}
                   </Text>
                 </View>
               </View>
             </View>
-            {/* details */}
-            <View style={styles.currentDetailsContainer}>
-              <WeatherDetailCard
-                icon={PressureIcon}
-                value={data?.main.pressure}
-                unit="hPa"
-                color="gray"
-                loading={loading}
-              />
-              <View style={styles.breakLine}></View>
-              <WeatherDetailCard
-                icon={HumidityIcon}
-                value={data?.main.humidity}
-                unit="%"
-                color={colors.hmd}
-                loading={loading}
-              />
-              <View style={styles.breakLine}></View>
-              <WeatherDetailCard
-                icon={WindIcon}
-                value={data?.wind?.speed}
-                unit="km/h"
-                color="lightblue"
-                loading={loading}
-              />
+            <View
+              style={[
+                styles.currentWeatherCard,
+                {
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  flexGrow: 1.25,
+                  borderWidth: 1,
+                  borderColor: colors.primary,
+                  marginBottom: 10,
+                  marginTop: 10,
+                },
+              ]}>
+              <View style={{ flexDirection: "row", alignContent: "flex-end" }}>
+                {loading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text style={styles.currentTemp}>
+                    {data?.main.temp.toFixed(1)}
+                  </Text>
+                )}
+                <Text
+                  style={[
+                    styles.currentTemp,
+                    { fontSize: 50, fontWeight: "100" },
+                  ]}>
+                  °C
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 20,
+                }}>
+                <Text
+                  style={[
+                    styles.currentMinMax,
+                    { backgroundColor: colors.hmd },
+                  ]}>
+                  {data?.main.temp_min.toFixed(1)}°C
+                </Text>
+                <Text
+                  style={[
+                    styles.currentMinMax,
+                    { backgroundColor: "orangered" },
+                  ]}>
+                  {data?.main.temp_max.toFixed(1)}°C
+                </Text>
+              </View>
             </View>
           </View>
-          <LineBreak />
-          <Text style={[constans.sectionTitle, { fontSize: 25 }]}>
-            Forecast
-          </Text>
-          <View style={styles.forecastContainer}>
-            {foreCast?.list.map((element, index) => {
-              return <ForeCast data={element} key={index} />;
-            })}
+          {/* details */}
+          <View style={styles.currentDetailsContainer}>
+            <WeatherDetailCard
+              icon={PressureIcon}
+              value={data?.main.pressure}
+              unit="hPa"
+              color="gray"
+              loading={loading}
+            />
+            <View style={styles.breakLine}></View>
+            <WeatherDetailCard
+              icon={HumidityIcon}
+              value={data?.main.humidity}
+              unit="%"
+              color={colors.hmd}
+              loading={loading}
+            />
+            <View style={styles.breakLine}></View>
+            <WeatherDetailCard
+              icon={WindIcon}
+              value={data?.wind?.speed}
+              unit="km/h"
+              color="lightblue"
+              loading={loading}
+            />
           </View>
         </View>
-      </ScrollView>
-      // </SafeAreaView>
+        <LineBreak />
+        <Text style={[constans.sectionTitle, { fontSize: 25 }]}>Forecast</Text>
+        <View style={styles.forecastContainer}>
+          {foreCast?.list.map((element, index) => {
+            return <ForeCast data={element} key={index} />;
+          })}
+        </View>
+      </TabContainer>
     );
   }
 };

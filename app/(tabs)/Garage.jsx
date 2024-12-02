@@ -1,15 +1,13 @@
 import {
   ActivityIndicator,
-  ScrollView,
   StyleSheet,
   Text,
   View,
   FlatList,
   Button,
-  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
-import { database, firestore } from "../../FirebaseConfig";
+import { database } from "../../FirebaseConfig";
 import { onValue, ref } from "firebase/database";
 import TermometerIcon from "../../assets/termometer.svg";
 import HumidityIcon from "../../assets/droplet.svg";
@@ -18,9 +16,9 @@ import { Audio } from "expo-av";
 import LineBreak from "../components/LineBreak";
 import GarageStatus from "../components/GarageStatus";
 import SectionTitle from "../components/SectionTitle";
-import constans from "../constans/styling";
 import { useAuth } from "../context/AuthContext";
 import { formatGarageTimestamp } from "../utils/Helpers";
+import TabContainer from "../components/TabContainer";
 
 const Garage = () => {
   const { userData } = useAuth();
@@ -128,74 +126,66 @@ const Garage = () => {
 
   return (
     // <SafeAreaView style={[styles.safeArea]}>
-    <ScrollView
-      style={{ backgroundColor: colors.background }}
-      contentContainerStyle={constans.scrollContainer}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-      <View style={constans.container}>
-        <SectionTitle text="GARAGE" />
+    <TabContainer>
+      <SectionTitle text="GARAGE" />
+
+      <LineBreak />
+      {loading ? (
+        <ActivityIndicator color="#126ADC" /> // Loader animation
+      ) : (
+        <GarageStatus data={data} loading={loading} setLoading={setLoading} />
+      )}
+      <View style={styles.dataContainer}>
+        <LineBreak />
+        <View style={styles.dhtContainer}>
+          <View style={styles.dhtCardContainer}>
+            <TermometerIcon fill={"#CE49BC"} style={styles.tempIcon} />
+            {loading ? (
+              <ActivityIndicator color="#126ADC" />
+            ) : (
+              <Text style={styles.dhtText}>{data?.temp}°C</Text>
+            )}
+          </View>
+          <View style={styles.dhtCardContainer}>
+            <HumidityIcon fill={"#136ADC"} style={styles.hmdIcon} />
+            {loading ? (
+              <ActivityIndicator color="#126ADC" />
+            ) : (
+              <Text style={styles.dhtText}>{data?.hmd}%</Text>
+            )}
+          </View>
+        </View>
 
         <LineBreak />
-        {loading ? (
-          <ActivityIndicator color="#126ADC" /> // Loader animation
-        ) : (
-          <GarageStatus data={data} loading={loading} setLoading={setLoading} />
-        )}
-        <View style={styles.dataContainer}>
-          <LineBreak />
-          <View style={styles.dhtContainer}>
-            <View style={styles.dhtCardContainer}>
-              <TermometerIcon fill={"#CE49BC"} style={styles.tempIcon} />
-              {loading ? (
-                <ActivityIndicator color="#126ADC" />
-              ) : (
-                <Text style={styles.dhtText}>{data?.temp}°C</Text>
-              )}
-            </View>
-            <View style={styles.dhtCardContainer}>
-              <HumidityIcon fill={"#136ADC"} style={styles.hmdIcon} />
-              {loading ? (
-                <ActivityIndicator color="#126ADC" />
-              ) : (
-                <Text style={styles.dhtText}>{data?.hmd}%</Text>
-              )}
-            </View>
-          </View>
-
-          <LineBreak />
-          <View style={{ marginBottom: 10 }}>
-            <Button
-              color="#126ADC"
-              title={!openTab ? "Show Log" : "Close log"}
-              onPress={handleShowLogPress}
-            />
-          </View>
-
-          {openTab ? (
-            <>
-              <Text
-                style={{
-                  color: "white",
-                  fontWeight: "300",
-                  letterSpacing: 2,
-                }}>
-                Total connection interruptions:{" "}
-                {lostSignalCounter && lostSignalCounter}
-              </Text>
-              <FlatList
-                data={garageLog}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={styles.flatListContainer}
-              />
-            </>
-          ) : null}
+        <View style={{ marginBottom: 10 }}>
+          <Button
+            color="#126ADC"
+            title={!openTab ? "Show Log" : "Close log"}
+            onPress={handleShowLogPress}
+          />
         </View>
+
+        {openTab ? (
+          <>
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "300",
+                letterSpacing: 2,
+              }}>
+              Total connection interruptions:{" "}
+              {lostSignalCounter && lostSignalCounter}
+            </Text>
+            <FlatList
+              data={garageLog}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              contentContainerStyle={styles.flatListContainer}
+            />
+          </>
+        ) : null}
       </View>
-    </ScrollView>
-    // </SafeAreaView>
+    </TabContainer>
   );
 };
 

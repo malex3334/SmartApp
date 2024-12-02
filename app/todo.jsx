@@ -7,9 +7,6 @@ import {
   Modal,
   TextInput,
   TouchableWithoutFeedback,
-  ActivityIndicator,
-  Animated,
-  Touchable,
 } from "react-native";
 import { firebaseData } from "../FirebaseConfig";
 import {
@@ -47,6 +44,7 @@ const Todo = () => {
   const modalRef = useRef();
 
   const handleReorder = async (data) => {
+    setLoading(true);
     const reorderedData = [...data];
     setTodoData(reorderedData);
 
@@ -60,10 +58,11 @@ const Todo = () => {
         });
       }
 
-      // Commit the batch operation
       await batch.commit();
     } catch (error) {
       console.error("Error updating order in Firestore: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,8 +86,8 @@ const Todo = () => {
     return () => unsubscribe();
   }, []);
 
-  // Handle adding new todo
   const handleAddTodo = async () => {
+    setLoading(true);
     if (newTodoTitle.trim() === "") return;
     try {
       await addDoc(collectionRef, {
@@ -104,6 +103,8 @@ const Todo = () => {
       setNewTodoTitle("");
     } catch (error) {
       console.error("Error adding document: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,12 +117,15 @@ const Todo = () => {
   };
 
   const handleDeleteTodo = async (id) => {
+    setLoading(true);
     const todoRef = doc(firebaseData, "todo", id);
     try {
       await deleteDoc(todoRef);
       setTodoData((prevData) => prevData.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Error deleting document: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,9 +139,9 @@ const Todo = () => {
   };
 
   const handleSaveEditedTodo = async (id) => {
+    setLoading(true);
     const todoRef = doc(firebaseData, "todo", id);
     try {
-      // Update the title and any other fields (if needed)
       await updateDoc(todoRef, {
         "todo.title": editedValue,
         "todo.category": newTodoCategory,
@@ -161,6 +165,8 @@ const Todo = () => {
       setEditedValue("");
     } catch (error) {
       console.log("Error updating todo", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -204,10 +210,6 @@ const Todo = () => {
           text={`TODOS ${completedCount} / ${todosCount}${
             todosCount == completedCount ? " 🎉" : ""
           }`}
-
-          // text={`TODOS ${
-          //   todoData.filter((item) => item?.todo.status === "completed").length
-          // }/${todoData?.length} `}
         />
         <LineBreak />
         {todoData?.length > 0 ? (
@@ -238,7 +240,6 @@ const Todo = () => {
           style={styles.buttonContainer}
           onPress={() => {
             setModalVisible(true);
-            // focus na input
             setTimeout(() => {
               modalRef?.current.focus();
             }, 200);

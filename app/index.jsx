@@ -7,7 +7,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "expo-router";
 import colors from "./constans/colors";
 import { StatusBar } from "expo-status-bar";
@@ -20,10 +20,8 @@ import { FirebaseError } from "../FirebaseConfig";
 
 const Index = () => {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const [signFormOpen, setSignFormOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -59,7 +57,7 @@ const Index = () => {
           </Text>
           <TouchableOpacity
             style={constans.touchableButton}
-            onPress={() => router.push("LoginForm")}>
+            onPress={() => router.replace("LoginForm")}>
             <Text style={constans.touchableButtonText}>Sign in</Text>
           </TouchableOpacity>
         </View>

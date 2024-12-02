@@ -1,14 +1,12 @@
 import {
   StyleSheet,
   View,
-  ScrollView,
   Switch,
   Text,
   TextInput,
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import constans from "../constans/styling";
 import SectionTitle from "../components/SectionTitle";
 import LineBreak from "../components/LineBreak";
 import SignIn from "../components/SignIn";
@@ -16,6 +14,7 @@ import OptionComponent from "../components/OptionComponent";
 import { useAuth } from "../context/AuthContext";
 import colors from "../constans/colors";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import TabContainer from "../components/TabContainer";
 
 const Profile = () => {
   const {
@@ -48,65 +47,61 @@ const Profile = () => {
   if (!userData) return null;
 
   return (
-    <ScrollView
-      contentContainerStyle={constans.scrollContainer}
-      style={{ backgroundColor: colors.background }}>
-      <View style={constans.container}>
-        <SectionTitle text="Profile" />
-        <LineBreak />
-        <View style={styles.greetingContainer}>
-          <Text style={[styles.greetingText, { color: colors.primary }]}>
-            Welcome,
-          </Text>
-          <FontAwesome size={100} color="white" name="user" />
-          {edit ? (
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-              />
-              <TouchableOpacity onPress={saveName}>
-                <Ionicons color={colors.primary} name="checkmark" size={36} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={toggleEdit}>
-                <MaterialIcons color="red" name="cancel" size={36} />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <Text style={styles.greetingText} onPress={toggleEdit}>
-              {userData.name}
-            </Text>
-          )}
-        </View>
-        <SignIn />
-        <View style={styles.optionsContainer}>
-          <LineBreak />
-          <View style={styles.optionsHeaderContainer}>
-            <Text style={styles.optionsHeader}>Options</Text>
-          </View>
-          <View style={styles.singleOptionContainer}>
-            <Text style={styles.label}>Allow sounds:</Text>
-            <Switch
-              value={userData.options.allowSounds}
-              onValueChange={handleSoundToggle}
+    <TabContainer>
+      <SectionTitle text="Profile" />
+      <LineBreak />
+      <View style={styles.greetingContainer}>
+        <Text style={[styles.greetingText, { color: colors.primary }]}>
+          Welcome,
+        </Text>
+        <FontAwesome size={100} color="white" name="user" />
+        {edit ? (
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
             />
+            <TouchableOpacity onPress={saveName}>
+              <Ionicons color={colors.primary} name="checkmark" size={36} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleEdit}>
+              <MaterialIcons color="red" name="cancel" size={36} />
+            </TouchableOpacity>
           </View>
-          <View style={styles.singleOptionContainer}>
-            <Text style={[styles.label, { flex: 1 }]}>Language:</Text>
-            <View style={styles.optionComponentContainer}>
-              <OptionComponent
-                options={options}
-                setOptions={setOptions}
-                value={optionValue}
-                setValue={setOptionsValue}
-                saveLang={saveLang}
-              />
-            </View>
+        ) : (
+          <Text style={styles.greetingText} onPress={toggleEdit}>
+            {userData.name}
+          </Text>
+        )}
+      </View>
+      <SignIn />
+      <View style={styles.optionsContainer}>
+        <LineBreak />
+        <View style={styles.optionsHeaderContainer}>
+          <Text style={styles.optionsHeader}>Options</Text>
+        </View>
+        <View style={styles.singleOptionContainer}>
+          <Text style={styles.label}>Allow sounds:</Text>
+          <Switch
+            value={userData.options.allowSounds}
+            onValueChange={handleSoundToggle}
+          />
+        </View>
+        <View style={styles.singleOptionContainer}>
+          <Text style={[styles.label, { flex: 1 }]}>Language:</Text>
+          <View style={styles.optionComponentContainer}>
+            <OptionComponent
+              options={options}
+              setOptions={setOptions}
+              value={optionValue}
+              setValue={setOptionsValue}
+              saveLang={saveLang}
+            />
           </View>
         </View>
       </View>
-    </ScrollView>
+    </TabContainer>
   );
 };
 

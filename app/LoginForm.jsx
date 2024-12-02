@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,12 +12,14 @@ import colors from "./constans/colors";
 import SectionTitle from "./components/SectionTitle";
 import LineBreak from "./components/LineBreak";
 import { useAuth } from "./context/AuthContext";
+import { useRouter } from "expo-router";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("alex3334@gmail.com");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { user, signIn } = useAuth();
+  const router = useRouter();
 
   const validateForm = () => {
     if (!email) {
@@ -50,47 +52,55 @@ const LoginForm = () => {
     }
   };
 
-  return (
-    <View style={constans.scrollContainer}>
-      <SectionTitle style={constans} text="Login" />
-      <LineBreak />
-      <View style={[constans.container, { width: "80%" }]}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Email"
-            keyboardType="email-address"
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            secureTextEntry={!showPassword}
-          />
+  useEffect(() => {
+    if (user) {
+      router.replace("/(tabs)/Garage");
+    }
+  }, [user, router]);
+
+  if (!user) {
+    return (
+      <View style={constans.scrollContainer}>
+        <SectionTitle style={constans} text="Login" />
+        <LineBreak />
+        <View style={[constans.container, { width: "80%" }]}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              keyboardType="email-address"
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity
+              style={[
+                styles.showPasswordButton,
+                { position: "absolute", right: 12 },
+              ]}
+              onPress={() => setShowPassword(!showPassword)}>
+              <Text style={styles.showPasswordText}>
+                {showPassword ? "Hide" : "Show"}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
-            style={[
-              styles.showPasswordButton,
-              { position: "absolute", right: 12 },
-            ]}
-            onPress={() => setShowPassword(!showPassword)}>
-            <Text style={styles.showPasswordText}>
-              {showPassword ? "Hide" : "Show"}
-            </Text>
+            style={constans.touchableButton}
+            onPress={handleSubmit}>
+            <Text style={constans.touchableButtonText}>Login</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={constans.touchableButton}
-          onPress={handleSubmit}>
-          <Text style={constans.touchableButtonText}>Login</Text>
-        </TouchableOpacity>
       </View>
-    </View>
-  );
+    );
+  }
 };
 
 export default LoginForm;

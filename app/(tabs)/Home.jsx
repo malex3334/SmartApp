@@ -1,17 +1,11 @@
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import React from "react";
 import colors from "../constans/colors";
-import constans from "../constans/styling";
 import SectionTitle from "../components/SectionTitle";
 import LineBreak from "../components/LineBreak";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import TabContainer from "../components/TabContainer";
 
 const Home = () => {
   const router = useRouter();
@@ -46,22 +40,18 @@ const Home = () => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={constans.scrollContainer}
-      style={{ backgroundColor: colors.background }}>
-      <View style={constans.container}>
-        <SectionTitle text="Home" />
-        <LineBreak />
-        <View style={styles.buttonsContainer}>
-          {createIcon("remote-tv", "Remote")}
-          {createIcon("sun-thermometer", "Weather")}
-          {createIcon("garage", "Garage")}
-          {createIcon("cart", "Shopping")}
-          {createIcon("calendar", "Calendar")}
-          {createIcon("clipboard", "ToDo")}
-        </View>
+    <TabContainer>
+      <SectionTitle text="Home" />
+      <LineBreak />
+      <View style={styles.buttonsContainer}>
+        {createIcon("remote-tv", "Remote")}
+        {createIcon("sun-thermometer", "Weather")}
+        {createIcon("garage", "Garage")}
+        {createIcon("cart", "Shopping")}
+        {createIcon("calendar", "Calendar")}
+        {createIcon("clipboard", "ToDo")}
       </View>
-    </ScrollView>
+    </TabContainer>
   );
 };
 

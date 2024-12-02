@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Vibration } from "react-native";
 import colors from "../constans/colors";
 import LineBreak from "../components/LineBreak";
 import SectionTitle from "../components/SectionTitle";
-import constans from "../constans/styling";
 import {
   FontAwesome,
   MaterialIcons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import TabContainer from "../components/TabContainer";
 
 const Remote = () => {
   const tvArray = [
@@ -126,48 +120,44 @@ const Remote = () => {
   }, []);
 
   return (
-    <ScrollView
-      contentContainerStyle={constans.scrollContainer}
-      style={{ backgroundColor: colors.background }}>
-      <View style={[constans.container]}>
-        <SectionTitle text="Remote" />
-        <LineBreak />
-        <View style={styles.dotContainer}>
-          <Text style={{ color: "white", fontSize: 20 }}>status:</Text>
-          <View
-            style={[
-              styles.statusDot,
-              { backgroundColor: !status ? "red" : colors.primary },
-            ]}></View>
-        </View>
-
+    <TabContainer>
+      <SectionTitle text="Remote" />
+      <LineBreak />
+      <View style={styles.dotContainer}>
+        <Text style={{ color: "white", fontSize: 20 }}>status:</Text>
         <View
           style={[
-            styles.borderContainer,
-            { borderColor: status ? colors.primary : "red" },
-          ]}>
-          <View style={{ position: "absolute", top: 20 }}>
-            {createButtons(buttonsArray4, styles.buttonsALL)}
-          </View>
-          <View style={[styles.rowContainer]}>
-            <FontAwesome name="tv" size={25} color="lightgray" />
-            {createButtons(tvArray, styles.buttonsTV)}
-          </View>
-          <View style={styles.rowContainer}>
-            <MaterialCommunityIcons
-              name="amplifier"
-              size={25}
-              color="lightgray"
-            />
-            {createButtons(ampArray)}
-          </View>
-          <View style={styles.rowContainer}>
-            <MaterialIcons name="input" size={25} color="lightgray" />
-            {createButtons(srcArray, styles.buttonsAMP)}
-          </View>
+            styles.statusDot,
+            { backgroundColor: !status ? "red" : colors.primary },
+          ]}></View>
+      </View>
+
+      <View
+        style={[
+          styles.borderContainer,
+          { borderColor: status ? colors.primary : "red" },
+        ]}>
+        <View style={{ position: "absolute", top: 20 }}>
+          {createButtons(buttonsArray4, styles.buttonsALL)}
+        </View>
+        <View style={[styles.rowContainer]}>
+          <FontAwesome name="tv" size={25} color="lightgray" />
+          {createButtons(tvArray, styles.buttonsTV)}
+        </View>
+        <View style={styles.rowContainer}>
+          <MaterialCommunityIcons
+            name="amplifier"
+            size={25}
+            color="lightgray"
+          />
+          {createButtons(ampArray)}
+        </View>
+        <View style={styles.rowContainer}>
+          <MaterialIcons name="input" size={25} color="lightgray" />
+          {createButtons(srcArray, styles.buttonsAMP)}
         </View>
       </View>
-    </ScrollView>
+    </TabContainer>
   );
 };
 
