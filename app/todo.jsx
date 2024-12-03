@@ -17,7 +17,6 @@ import {
   updateDoc,
   addDoc,
   deleteDoc,
-  getDocs,
 } from "firebase/firestore";
 import { NestableScrollContainer } from "react-native-draggable-flatlist";
 import constans from "./constans/styling";

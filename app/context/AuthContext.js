@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.js
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { auth } from "../../FirebaseConfig";
 import {

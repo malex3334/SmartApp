@@ -61,7 +61,6 @@ const GarageStatus = ({ data, loading, setLoading }) => {
   const handleWifiIcon = (value) => {
     switch (true) {
       case value == 0:
-        // return <WifiNoIcon style={styles.wifiIcon} />;
         return (
           <MaterialCommunityIcons
             name="wifi-off"
@@ -83,7 +82,6 @@ const GarageStatus = ({ data, loading, setLoading }) => {
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
       <View style={[styles.signContainer]}>
-        {/* <Animated.View style={{opacity: fadeAnim}}> */}
         <View
           style={[
             styles.statusCircle,
@@ -159,7 +157,6 @@ const styles = StyleSheet.create({
     borderRadius: 1000,
     borderWidth: 10,
     transform: "scale(1.3)",
-    // filter: "blur(1px)",
   },
 
   garageIcon: {

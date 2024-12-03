@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "rgba(255,255,255,0.4)",
-    // borderColor: colors.textPrimary,
     backgroundColor: colors.background,
     elevation: 5,
   },

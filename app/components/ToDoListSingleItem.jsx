@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { NestableDraggableFlatList } from "react-native-draggable-flatlist";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors from "../constans/colors";

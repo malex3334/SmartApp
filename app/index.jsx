@@ -70,41 +70,6 @@ const Index = () => {
       </ScrollView>
     );
   }
-
-  // if (user) {
-  //   router.replace("/(tabs)/Garage");
-  // }
-  //   if (user) {
-  //     return (
-  //       <ScrollView contentContainerStyle={styles.container}>
-  //         <View>
-  //           <StatusBar backgroundColor="white" />
-  //           <View style={[styles.cardContainer]}>
-  //             <Link href="/Garage">
-  //               <Garage />
-  //             </Link>
-  //           </View>
-  //           {/* <View style={[styles.cardContainer]}>
-  //             <Link href="/Home">
-  //               <Home />
-  //             </Link>
-  //           </View> */}
-  //           {/* <Link href="/Weather" style={{}}> */}
-  //           <Pressable
-  //             onPress={() => router.push("/Weather")}
-  //             style={[styles.cardContainer, { flexGrow: 0, maxHeight: 1000 }]}>
-  //             <Weather />
-  //           </Pressable>
-  //           {/* </Link> */}
-  //           <View style={[styles.cardContainer]}>
-  //             <Link href="/Remote">
-  //               <Remote />
-  //             </Link>
-  //           </View>
-  //         </View>
-  //       </ScrollView>
-  //     );
-  //   }
 };
 
 export default Index;

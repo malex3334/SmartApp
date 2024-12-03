@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import colors from "../constans/colors";
 import LineBreak from "../components/LineBreak";
 import constans from "../constans/styling";
@@ -20,19 +20,15 @@ import ForeCast from "../components/ForeCast";
 import { weatherImages } from "../utils/imageMapping";
 import { getHours } from "../utils/Helpers";
 import WeatherDetailCard from "../components/WeatherDetailCard";
-import { useAuth } from "../context/AuthContext";
-import { WEATHERAPI_KEY } from "@env";
 import TabContainer from "../components/TabContainer";
 import { useRouter } from "expo-router";
-import Constants from "expo-constants";
+import { weatherApi } from "../../FirebaseConfig";
 
 const Weather = () => {
   const [data, setData] = useState(null);
   const [foreCast, setForecast] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const router = useRouter();
-  // const apiKey = Constants?.mainfest.extra.API_KEY;
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -42,9 +38,8 @@ const Weather = () => {
     }, 2000);
   }, []);
 
-  const apiKey = WEATHERAPI_KEY;
+  const apiKey = weatherApi;
 
-  // console.log(apiKey);
   const fetchForecast = async () => {
     const lon = "17.295170";
     const lat = "50.945049";
@@ -236,7 +231,6 @@ export default Weather;
 const styles = StyleSheet.create({
   cityName: {
     alignItems: "center",
-    // backgroundColor: "red",
     alignSelf: "center",
     color: colors.textPrimary,
     fontSize: 36,
@@ -323,7 +317,6 @@ const styles = StyleSheet.create({
     flex: 0.3,
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor: "red",
     padding: 5,
     gap: 15,
   },
