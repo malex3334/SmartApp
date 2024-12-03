@@ -16,10 +16,10 @@ import SectionTitle from "./components/SectionTitle";
 import LineBreak from "./components/LineBreak";
 import constans from "./constans/styling";
 import HeroImg from "../assets/Hero.jpg";
-import { FirebaseError } from "../FirebaseConfig";
+import { auth, FirebaseError } from "../FirebaseConfig";
 
 const Index = () => {
-  const { user } = useAuth();
+  const { user, setUser, signOut } = useAuth();
   const router = useRouter();
   const colorScheme = useColorScheme();
 
@@ -28,6 +28,12 @@ const Index = () => {
       router.replace("/(tabs)/Garage");
     }
   }, [user, router]);
+
+  useEffect(() => {
+    if (!auth.currentUser || auth.currentUser == "undefined") {
+      signOut();
+    }
+  }, []);
 
   if (!user) {
     return (

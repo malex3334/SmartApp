@@ -29,11 +29,13 @@ export default {
     },
     android: {
       newArchEnabled: true,
+      permisions: [],
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
-      package: "com.malex3334.SmartApp",
+      package: "com.alex3334",
+      googleServicesFile: "./google-services.json",
     },
     web: {
       favicon: "./assets/favicon.png",

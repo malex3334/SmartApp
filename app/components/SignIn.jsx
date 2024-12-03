@@ -9,13 +9,9 @@ import {
 
 import { useAuth } from "../context/AuthContext";
 import colors from "../constans/colors";
-import { USER_NAME, USER_PASSWORD } from "@env";
-import LineBreak from "./LineBreak";
 
 const SignIn = () => {
-  const { user, signIn, signOut } = useAuth();
-  const email = USER_NAME;
-  const password = USER_PASSWORD;
+  const { user, signOut } = useAuth();
   //testingLogin321!
 
   return (
@@ -23,8 +19,7 @@ const SignIn = () => {
       <View style={styles.buttonContainer}>
         {!user && (
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: colors.primary }]}
-            onPress={() => signIn(email, password)}>
+            style={[styles.button, { backgroundColor: colors.primary }]}>
             <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
         )}

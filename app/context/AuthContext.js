@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
   const [loginError, setLoginError] = useState("");
   const navigation = useNavigation();
 
-  console.log(auth);
   useEffect(() => {
     //checklogin
     !user && navigation.navigate("index");
@@ -62,7 +61,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && auth?.currentUser != "undefined") {
       const userDoc = doc(firebaseData, "users", auth?.currentUser.uid);
       const unsubscribe = onSnapshot(
         userDoc,
@@ -132,6 +131,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         userData,
         signIn,
         signOut,

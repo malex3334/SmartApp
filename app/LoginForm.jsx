@@ -13,6 +13,8 @@ import SectionTitle from "./components/SectionTitle";
 import LineBreak from "./components/LineBreak";
 import { useAuth } from "./context/AuthContext";
 import { useRouter } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import TabContainer from "./components/TabContainer";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("alex3334@gmail.com");
@@ -58,52 +60,54 @@ const LoginForm = () => {
     }
   }, [user, router]);
 
-  if (!user) {
-    return (
-      <View style={constans.scrollContainer}>
-        <SectionTitle style={constans} text="Login" />
-        <LineBreak />
-        <View style={[constans.container, { width: "80%" }]}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Email"
-              keyboardType="email-address"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Password"
-              secureTextEntry={!showPassword}
-            />
-            <TouchableOpacity
-              style={[
-                styles.showPasswordButton,
-                { position: "absolute", right: 12 },
-              ]}
-              onPress={() => setShowPassword(!showPassword)}>
-              <Text style={styles.showPasswordText}>
-                {showPassword ? "Hide" : "Show"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            style={constans.touchableButton}
-            onPress={handleSubmit}>
-            <Text style={constans.touchableButtonText}>Login</Text>
-          </TouchableOpacity>
-          {loginError != "" && (
-            <Text style={styles.errorText}>{loginError}</Text>
-          )}
+  return (
+    <TabContainer>
+      <SectionTitle style={constans} text="Login" />
+      <LineBreak />
+      <View style={[constans.container]}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            keyboardType="email-address"
+          />
         </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity
+            style={[
+              styles.showPasswordButton,
+              { position: "absolute", right: 12 },
+            ]}
+            onPress={() => setShowPassword(!showPassword)}>
+            {showPassword ? (
+              <MaterialCommunityIcons
+                name="eye-off"
+                size={24}
+                color="lightgray"
+              />
+            ) : (
+              <MaterialCommunityIcons name="eye" size={24} color="lightgray" />
+            )}
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          style={constans.touchableButton}
+          onPress={handleSubmit}>
+          <Text style={constans.touchableButtonText}>Login</Text>
+        </TouchableOpacity>
+        {loginError != "" && <Text style={styles.errorText}>{loginError}</Text>}
       </View>
-    );
-  }
+    </TabContainer>
+  );
 };
 
 export default LoginForm;

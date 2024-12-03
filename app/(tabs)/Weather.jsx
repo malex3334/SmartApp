@@ -32,7 +32,7 @@ const Weather = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
-  const apiKey = Constants.mainfest.extra.API_KEY;
+  // const apiKey = Constants?.mainfest.extra.API_KEY;
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -42,8 +42,9 @@ const Weather = () => {
     }, 2000);
   }, []);
 
-  // const apiKey = WEATHERAPI_KEY;
+  const apiKey = WEATHERAPI_KEY;
 
+  // console.log(apiKey);
   const fetchForecast = async () => {
     const lon = "17.295170";
     const lat = "50.945049";
