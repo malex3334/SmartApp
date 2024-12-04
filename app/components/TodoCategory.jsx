@@ -2,7 +2,6 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 
 const TodoCategory = ({ category, setNewTodoCategory, newTodoCategory }) => {
-  console.log(newTodoCategory);
   return (
     <TouchableOpacity
       style={[

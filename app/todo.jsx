@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import "react-native-get-random-values";
+
 import {
   StyleSheet,
   Text,
@@ -6,8 +8,9 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  TouchableWithoutFeedback,
   Platform,
+  Dimensions,
+  KeyboardAvoidingView,
 } from "react-native";
 import { firebaseData } from "../FirebaseConfig";
 import {
@@ -16,8 +19,8 @@ import {
   doc,
   writeBatch,
   updateDoc,
-  addDoc,
   deleteDoc,
+  setDoc,
 } from "firebase/firestore";
 import { NestableScrollContainer } from "react-native-draggable-flatlist";
 import constans from "./constans/styling";
@@ -28,6 +31,7 @@ import ToDoListSingleItem from "./components/ToDoListSingleItem";
 import { launchVibrations } from "./utils/Helpers";
 import TodoCategory from "./components/TodoCategory";
 import { useAuth } from "./context/AuthContext";
+import { v4 as uuidv4 } from "uuid";
 
 const Todo = () => {
   const collectionRef = collection(firebaseData, "todo");
@@ -94,15 +98,21 @@ const Todo = () => {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [handleEditTodo]);
 
   const handleAddTodo = async () => {
     const timestampSeconds = Math.floor(Date.now() / 1000);
     setLoading(true);
+
     if (newTodoTitle.trim() === "") return;
+
     try {
-      await addDoc(collectionRef, {
+      const newDocId = uuidv4();
+      const docRef = doc(collectionRef, newDocId);
+
+      await setDoc(docRef, {
         todo: {
+          id: newDocId,
           title: newTodoTitle,
           status: "in-progress",
           order: lastIndex ? lastIndex + 1 : 0,
@@ -120,7 +130,6 @@ const Todo = () => {
       setLoading(false);
     }
   };
-
   const handleCancel = () => {
     setModalVisible(false);
     setEditTodo(false);
@@ -176,11 +185,14 @@ const Todo = () => {
 
       setModalVisible(false);
       setEditedValue("");
+      setEditTodo(false);
+      setNewTodoCategory();
     } catch (error) {
       console.log("Error updating todo", error);
     } finally {
       setLoading(false);
     }
+    setEditTodo(false);
   };
 
   const handleComplete = async (id, currentStatus) => {
@@ -255,73 +267,80 @@ const Todo = () => {
             setModalVisible(true);
             setTimeout(() => {
               modalRef?.current.focus();
-            }, 1000);
+            }, 300);
           }}>
           <Text style={styles.buttonText}>Add new</Text>
         </TouchableOpacity>
       </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleCancel}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>
-              {editTodo ? "Edit Todo" : "Add New Todo"}
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter todo title"
-              value={editTodo ? editedValue : newTodoTitle}
-              onChangeText={editTodo ? setEditedValue : setNewTodoTitle}
-              ref={modalRef}
-            />
-            <Text style={{ color: "white", padding: 10 }}>Category</Text>
-            <View style={styles.modalCategoryContainer}>
-              <TodoCategory
-                category="red"
-                setNewTodoCategory={setNewTodoCategory}
-                newTodoCategory={newTodoCategory}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1 }}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          statusBarTranslucent={true}
+          onRequestClose={handleCancel}>
+          <View style={[styles.modalOverlay]}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>
+                {editTodo ? "Edit Todo" : "Add New Todo"}
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter todo title"
+                value={editTodo ? editedValue : newTodoTitle}
+                onChangeText={editTodo ? setEditedValue : setNewTodoTitle}
+                ref={modalRef}
               />
-              <TodoCategory
-                category="orange"
-                setNewTodoCategory={setNewTodoCategory}
-                newTodoCategory={newTodoCategory}
-              />
-              <TodoCategory
-                category="yellow"
-                setNewTodoCategory={setNewTodoCategory}
-                newTodoCategory={newTodoCategory}
-              />
-              <TodoCategory
-                category="green"
-                setNewTodoCategory={setNewTodoCategory}
-                newTodoCategory={newTodoCategory}
-              />
-            </View>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                onPress={handleCancel}
-                style={[styles.modalButton, { backgroundColor: "orangered" }]}>
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={
-                  editTodo
-                    ? () => handleSaveEditedTodo(editedTodo.id)
-                    : handleAddTodo
-                }
-                style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>
-                  {editTodo ? "Edit" : "Add"}
-                </Text>
-              </TouchableOpacity>
+              <Text style={{ color: "white", padding: 10 }}>Category</Text>
+              <View style={styles.modalCategoryContainer}>
+                <TodoCategory
+                  category="red"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+                <TodoCategory
+                  category="orange"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+                <TodoCategory
+                  category="yellow"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+                <TodoCategory
+                  category="green"
+                  setNewTodoCategory={setNewTodoCategory}
+                  newTodoCategory={newTodoCategory}
+                />
+              </View>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  onPress={handleCancel}
+                  style={[
+                    styles.modalButton,
+                    { backgroundColor: "orangered" },
+                  ]}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={
+                    editTodo
+                      ? () => handleSaveEditedTodo(editedTodo.id)
+                      : handleAddTodo
+                  }
+                  style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>
+                    {editTodo ? "Edit" : "Add"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -347,8 +366,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    minWidth: 400,
-    minHeight: 500,
+    // height: "100%",
+    // width: "100%",
+    // minWidth: 400,
+    // minHeight: 500,
   },
   modalContainer: {
     backgroundColor: colors.background,

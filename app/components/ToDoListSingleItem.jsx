@@ -33,76 +33,88 @@ const ToDoListSingleItem = ({
     ]).start();
   };
 
-  const renderItem = useCallback(({ item, index, drag, isActive }) => {
-    const bounceAnim = React.useRef(new Animated.Value(1)).current;
-    launchVibrations("confirm");
-    const handleAnimation = (status) => {
-      if (status !== "completed") {
-        triggerBounce(bounceAnim);
-      }
-    };
-    return (
-      <Animated.View
-        style={[
-          {
-            transform: [{ scale: bounceAnim }],
-          },
-        ]}>
-        <TouchableOpacity
-          onLongPress={drag}
+  const renderItem = useCallback(
+    ({ item, index, drag, isActive }) => {
+      const handleDrag = () => {
+        drag();
+        launchVibrations("confirm");
+      };
+      const bounceAnim = React.useRef(new Animated.Value(1)).current;
+      // launchVibrations("confirm");
+      const handleAnimation = (status) => {
+        if (status !== "completed") {
+          triggerBounce(bounceAnim);
+        }
+      };
+      return (
+        <Animated.View
           style={[
-            styles.itemContainer,
-            { borderColor: item?.todo.category && item?.todo.category },
+            {
+              transform: [{ scale: bounceAnim }],
+            },
           ]}>
           <TouchableOpacity
+            // onLongPress={drag}
+            onLongPress={handleDrag}
             style={[
-              styles.checkBox,
-              item?.todo.status === "completed"
-                ? { borderColor: "rgba(255,255,255,0.2)" }
-                : { borderColor: "rgba(255,255,255,0.5)" },
-            ]}
-            onPress={() => {
-              handleComplete(item?.id, item?.todo.status);
-              handleAnimation(item?.todo.status);
-            }}>
-            {item?.todo.status === "completed" && (
-              <Text style={{ color: "white", fontSize: 18 }}>✔</Text>
-            )}
-          </TouchableOpacity>
-          <Text
-            style={[
-              styles.itemText,
-              item?.todo.status === "completed" && styles.completed,
+              styles.itemContainer,
+              { borderColor: item?.todo.category && item?.todo.category },
             ]}>
-            {item?.todo.title}
-          </Text>
-          <View style={styles.iconsContainer}>
-            <Text style={styles.author}>{item?.todo?.author?.slice(0, 1)}</Text>
-            <MaterialIcons
-              name="edit"
-              size={24}
-              color="gray"
+            <TouchableOpacity
               style={[
-                styles.icon,
-                item?.todo.status === "completed" && { opacity: 0.7 },
+                styles.checkBox,
+                item?.todo.status === "completed"
+                  ? { borderColor: "rgba(255,255,255,0.2)" }
+                  : { borderColor: "rgba(255,255,255,0.5)" },
               ]}
-              onPress={() => handleEditTodo(item.id)}
-            />
-            <MaterialIcons
-              name="delete"
-              size={24}
-              color="red"
+              onPress={() => {
+                handleComplete(item?.id, item?.todo.status);
+                handleAnimation(item?.todo.status);
+                item?.todo.status === "completed" &&
+                  launchVibrations("confirm");
+              }}>
+              {item?.todo.status === "completed" && (
+                <Text style={{ color: "white", fontSize: 18 }}>✔</Text>
+              )}
+            </TouchableOpacity>
+            <Text
               style={[
-                styles.icon,
-                item?.todo.status === "completed" && { opacity: 0.7 },
-              ]}
-              onPress={() => handleDeleteTodo(item.id)}
-            />
-          </View>
-        </TouchableOpacity>
-      </Animated.View>
-    );
-  }, []);
+                styles.itemText,
+                item?.todo.status === "completed" && styles.completed,
+              ]}>
+              {item?.todo.title}
+            </Text>
+            <View style={styles.iconsContainer}>
+              <Text style={styles.author}>
+                {item?.todo?.author?.slice(0, 1)}
+              </Text>
+              <MaterialIcons
+                name="edit"
+                size={24}
+                color="gray"
+                style={[
+                  styles.icon,
+                  item?.todo.status === "completed" && { opacity: 0.7 },
+                ]}
+                onPress={() => handleEditTodo(item.id)}
+              />
+              <MaterialIcons
+                name="delete"
+                size={24}
+                color="red"
+                style={[
+                  styles.icon,
+                  item?.todo.status === "completed" && { opacity: 0.7 },
+                ]}
+                onPress={() => handleDeleteTodo(item.id)}
+              />
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+      );
+    },
+    [handleEditTodo]
+  );
 
   return (
     <View>
