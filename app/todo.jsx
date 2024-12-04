@@ -7,6 +7,7 @@ import {
   Modal,
   TextInput,
   TouchableWithoutFeedback,
+  Platform,
 } from "react-native";
 import { firebaseData } from "../FirebaseConfig";
 import {
@@ -43,7 +44,15 @@ const Todo = () => {
   const [todosCount, setTodosCount] = useState();
   const modalRef = useRef();
   const { user } = useAuth();
+  const [client, setClient] = useState("");
 
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      setClient("ios");
+    } else if (Platform.OS === "android") {
+      setClient("android");
+    }
+  }, []);
   const handleReorder = async (data) => {
     setLoading(true);
     const reorderedData = [...data];
@@ -246,7 +255,7 @@ const Todo = () => {
             setModalVisible(true);
             setTimeout(() => {
               modalRef?.current.focus();
-            }, 200);
+            }, 1000);
           }}>
           <Text style={styles.buttonText}>Add new</Text>
         </TouchableOpacity>
@@ -257,66 +266,61 @@ const Todo = () => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={handleCancel}>
-        <TouchableWithoutFeedback onPress={handleCancel}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>
-                {editTodo ? "Edit Todo" : "Add New Todo"}
-              </Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter todo title"
-                value={editTodo ? editedValue : newTodoTitle}
-                onChangeText={editTodo ? setEditedValue : setNewTodoTitle}
-                ref={modalRef}
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>
+              {editTodo ? "Edit Todo" : "Add New Todo"}
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter todo title"
+              value={editTodo ? editedValue : newTodoTitle}
+              onChangeText={editTodo ? setEditedValue : setNewTodoTitle}
+              ref={modalRef}
+            />
+            <Text style={{ color: "white", padding: 10 }}>Category</Text>
+            <View style={styles.modalCategoryContainer}>
+              <TodoCategory
+                category="red"
+                setNewTodoCategory={setNewTodoCategory}
+                newTodoCategory={newTodoCategory}
               />
-              <Text style={{ color: "white", padding: 10 }}>Category</Text>
-              <View style={styles.modalCategoryContainer}>
-                <TodoCategory
-                  category="red"
-                  setNewTodoCategory={setNewTodoCategory}
-                  newTodoCategory={newTodoCategory}
-                />
-                <TodoCategory
-                  category="orange"
-                  setNewTodoCategory={setNewTodoCategory}
-                  newTodoCategory={newTodoCategory}
-                />
-                <TodoCategory
-                  category="yellow"
-                  setNewTodoCategory={setNewTodoCategory}
-                  newTodoCategory={newTodoCategory}
-                />
-                <TodoCategory
-                  category="green"
-                  setNewTodoCategory={setNewTodoCategory}
-                  newTodoCategory={newTodoCategory}
-                />
-              </View>
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  onPress={handleCancel}
-                  style={[
-                    styles.modalButton,
-                    { backgroundColor: "orangered" },
-                  ]}>
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={
-                    editTodo
-                      ? () => handleSaveEditedTodo(editedTodo.id)
-                      : handleAddTodo
-                  }
-                  style={styles.modalButton}>
-                  <Text style={styles.modalButtonText}>
-                    {editTodo ? "Edit" : "Add"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              <TodoCategory
+                category="orange"
+                setNewTodoCategory={setNewTodoCategory}
+                newTodoCategory={newTodoCategory}
+              />
+              <TodoCategory
+                category="yellow"
+                setNewTodoCategory={setNewTodoCategory}
+                newTodoCategory={newTodoCategory}
+              />
+              <TodoCategory
+                category="green"
+                setNewTodoCategory={setNewTodoCategory}
+                newTodoCategory={newTodoCategory}
+              />
+            </View>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={handleCancel}
+                style={[styles.modalButton, { backgroundColor: "orangered" }]}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={
+                  editTodo
+                    ? () => handleSaveEditedTodo(editedTodo.id)
+                    : handleAddTodo
+                }
+                style={styles.modalButton}>
+                <Text style={styles.modalButtonText}>
+                  {editTodo ? "Edit" : "Add"}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </TouchableWithoutFeedback>
+        </View>
       </Modal>
     </View>
   );
@@ -343,12 +347,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+    minWidth: 400,
+    minHeight: 500,
   },
   modalContainer: {
     backgroundColor: colors.background,
     padding: 20,
     borderRadius: 10,
     width: "80%",
+    borderWidth: 1,
     borderColor: "gray",
     shadowColor: colors.primary,
     shadowOffset: {

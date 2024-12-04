@@ -66,7 +66,7 @@ const ToDoListSingleItem = ({
               handleAnimation(item?.todo.status);
             }}>
             {item?.todo.status === "completed" && (
-              <Text style={{ color: "white", fontSize: 16 }}>✔</Text>
+              <Text style={{ color: "white", fontSize: 18 }}>✔</Text>
             )}
           </TouchableOpacity>
           <Text
