@@ -26,6 +26,7 @@ import LineBreak from "./components/LineBreak";
 import ToDoListSingleItem from "./components/ToDoListSingleItem";
 import { launchVibrations } from "./utils/Helpers";
 import TodoCategory from "./components/TodoCategory";
+import { useAuth } from "./context/AuthContext";
 
 const Todo = () => {
   const collectionRef = collection(firebaseData, "todo");
@@ -41,6 +42,7 @@ const Todo = () => {
   const [completedCount, setCompletedCount] = useState();
   const [todosCount, setTodosCount] = useState();
   const modalRef = useRef();
+  const { user } = useAuth();
 
   const handleReorder = async (data) => {
     setLoading(true);
@@ -86,6 +88,7 @@ const Todo = () => {
   }, []);
 
   const handleAddTodo = async () => {
+    const timestampSeconds = Math.floor(Date.now() / 1000);
     setLoading(true);
     if (newTodoTitle.trim() === "") return;
     try {
@@ -95,6 +98,8 @@ const Todo = () => {
           status: "in-progress",
           order: lastIndex ? lastIndex + 1 : 0,
           category: newTodoCategory ? newTodoCategory : "",
+          author: user?.name,
+          timestamp: timestampSeconds,
         },
       });
 

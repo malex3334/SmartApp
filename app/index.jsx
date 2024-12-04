@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useRouter } from "expo-router";
@@ -17,9 +18,10 @@ import LineBreak from "./components/LineBreak";
 import constans from "./constans/styling";
 import HeroImg from "../assets/Hero.jpg";
 import { auth, FirebaseError } from "../FirebaseConfig";
+import TabContainer from "./components/TabContainer";
 
 const Index = () => {
-  const { user, setUser, signOut } = useAuth();
+  const { user, setUser, signOut, authLoading } = useAuth();
   const router = useRouter();
   const colorScheme = useColorScheme();
 
@@ -29,13 +31,29 @@ const Index = () => {
     }
   }, [user, router]);
 
-  useEffect(() => {
-    if (!auth.currentUser || auth.currentUser == "undefined") {
-      signOut();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!auth.currentUser || auth.currentUser == "undefined") {
+  //     signOut();
+  //   }
+  // }, []);
 
-  if (!user) {
+  if (authLoading) {
+    return (
+      <TabContainer>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            alignContent: "center",
+          }}>
+          <ActivityIndicator size="large" />
+        </View>
+      </TabContainer>
+    );
+  }
+
+  if (!user && !authLoading) {
     return (
       <ScrollView
         style={{ backgroundColor: colors.background }}

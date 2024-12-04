@@ -6,6 +6,8 @@ import {
 } from "firebase/auth";
 import { useNavigation } from "expo-router";
 import { firebaseData } from "../../FirebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+
 import { onSnapshot, doc, updateDoc } from "firebase/firestore";
 // Create a Context
 const AuthContext = createContext();
@@ -16,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState();
   const [rerender, setRerender] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -60,6 +63,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
+      if (authenticatedUser) {
+        setUser(authenticatedUser);
+        setRerender((prev) => !prev);
+      } else {
+        setUser(null);
+      }
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe(); // Cleanup the listener on unmount
+  }, []);
+
+  useEffect(() => {
     if (user && auth?.currentUser != "undefined") {
       const userDoc = doc(firebaseData, "users", auth?.currentUser.uid);
       const unsubscribe = onSnapshot(
@@ -80,7 +97,7 @@ export const AuthProvider = ({ children }) => {
 
       return () => unsubscribe();
     }
-  }, [doc, rerender, handleNameChange]);
+  }, [doc, rerender, handleNameChange, onAuthStateChanged]);
 
   const handleSoundToggle = async (newValue) => {
     try {
@@ -138,6 +155,7 @@ export const AuthProvider = ({ children }) => {
         handleNameChange,
         handleLangChange,
         loginError,
+        authLoading,
       }}>
       {children}
     </AuthContext.Provider>

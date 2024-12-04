@@ -77,6 +77,7 @@ const ToDoListSingleItem = ({
             {item?.todo.title}
           </Text>
           <View style={styles.iconsContainer}>
+            <Text style={styles.author}>{item?.todo?.author?.slice(0, 1)}</Text>
             <MaterialIcons
               name="edit"
               size={24}
@@ -163,5 +164,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+  },
+  author: {
+    color: "gray",
+    fontWeight: "light",
   },
 });

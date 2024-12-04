@@ -17,11 +17,11 @@ import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import TabContainer from "../components/TabContainer";
 
 const Profile = () => {
-  const { userData, handleSoundToggle, handleNameChange, handleLangChange } =
+  const { user, handleSoundToggle, handleNameChange, handleLangChange } =
     useAuth();
   const [edit, setEdit] = useState(false);
-  const [name, setName] = useState(userData?.name);
-  const [optionValue, setOptionsValue] = useState(userData?.options.lang);
+  const [name, setName] = useState(user?.name);
+  const [optionValue, setOptionsValue] = useState(user?.options?.lang);
   const [options, setOptions] = useState([
     { label: "PL", value: "pl" },
     { label: "ENG", value: "en" },
@@ -38,7 +38,7 @@ const Profile = () => {
     handleLangChange(optionValue);
   };
 
-  if (!userData) return null;
+  if (!user) return null;
 
   return (
     <TabContainer>
@@ -65,7 +65,7 @@ const Profile = () => {
           </View>
         ) : (
           <Text style={styles.greetingText} onPress={toggleEdit}>
-            {userData.name}
+            {user?.name}
           </Text>
         )}
       </View>
@@ -78,7 +78,7 @@ const Profile = () => {
         <View style={styles.singleOptionContainer}>
           <Text style={styles.label}>Allow sounds:</Text>
           <Switch
-            value={userData.options.allowSounds}
+            value={user?.options?.allowSounds}
             onValueChange={handleSoundToggle}
           />
         </View>
