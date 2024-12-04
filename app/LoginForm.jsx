@@ -17,7 +17,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TabContainer from "./components/TabContainer";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("alex3334@gmail.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { user, signIn, loginError } = useAuth();
